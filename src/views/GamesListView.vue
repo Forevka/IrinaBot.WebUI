@@ -1,16 +1,19 @@
 <template>
-  <div class="game-list-view">
-    <template class="game-list-view-wrapper" v-if="haveGames()">
-      <div class="table-games-wrapper games-donated">
-        <GameListComponent :gameList="powerUpGames()" :tableType="0"/>
-      </div>
-      <div class="table-games-wrapper games-not-started">
-        <GameListComponent :gameList="notStartedGames()" :tableType="1"/>
-      </div>
-      <div class="table-games-wrapper games-started">
-        <GameListComponent :gameList="startedGames()" :tableType="2"/>
-      </div>
-    </template>
+  <div class="game-view">
+    <div class="game-list-view">
+      <template class="game-list-view-wrapper" v-if="haveGames()">
+        <div class="table-games-wrapper games-donated">
+          <GameListComponent :gameList="powerUpGames()" :tableType="0" @onrowchoose="rowChoose"/>
+        </div>
+        <div class="table-games-wrapper games-not-started">
+          <GameListComponent :gameList="notStartedGames()" :tableType="1" @onrowchoose="rowChoose"/>
+        </div>
+        <div class="table-games-wrapper games-started">
+          <GameListComponent :gameList="startedGames()" :tableType="2" @onrowchoose="rowChoose"/>
+        </div>
+      </template>
+    </div>
+    <game-map-preview-component :mapPreview="mapPreview" v-if="haveGames()"/>
   </div>
 </template>
 
@@ -28,26 +31,23 @@ import { DefaultContextHeaders } from '../models/enum/DefaultContextHeaders';
 import DefaultContextHelper from "@/services/Implementations/DefaultContextHelper";
 import { Game } from '../models/responses/GameModel';
 import GameListComponent from "@/components/GameListComponent.vue";
+import GameMapPreviewModel from '../models/responses/GameMapPreviewModel';
+import GameMapPreviewComponent from '@/components/GameMapPreviewComponent.vue';
 
 @Component({
   components: {
-    GameListComponent
+    GameListComponent,
+    GameMapPreviewComponent
   }
 })
 export default class GamesListView extends Vue {
   public client: IApiClient;
+
+  private mapPreview: GameMapPreviewModel = new GameMapPreviewModel();
   private gameListInterval: number = 3;
 
   private gameList: Game[] = [];
   private gameListIds: number[] = [];
-
-  /*private powerUpGames: Game[] = [];
-  private startedGames: Game[] = [];
-  private notStartedGames: Game[] = [];
-
-  private powerUpGamesIds: number[] = [];
-  private startedGamesIds: number[] = [];
-  private notStartedGamesIds: number[] = [];*/
 
   private sendMessageInterval!: number;
 
@@ -55,15 +55,31 @@ export default class GamesListView extends Vue {
     super();
   }
 
+  rowChoose(who, game: Game){
+    console.log(who)
+    console.log(game)
+    this.client.sendMessage(DefaultContextHelper.createGetMapInfo(game.gameCounter))
+  }
+
   created() {
     this.gameList = [];
+    this.mapPreview.mapname = "Выбери карту со списка слева";
+    this.mapPreview.tga = new ArrayBuffer(0);
+    this.mapPreview.author = "";
+    this.mapPreview.description = "";
+    this.mapPreview.players = "";
 
     this.client = client;
     this.client.addDefaultHandler(this.newChatMessage, DefaultContextHeaders.NEWMESSAGE)
     this.client.addDefaultHandler(this.onGamesList, DefaultContextHeaders.GETGAMELIST)
+    this.client.addDefaultHandler(this.onMapInfo, DefaultContextHeaders.MAPINFO)
 
 
     this.client.afterConnect(this.afterConnect)
+  }
+
+  onMapInfo(message: DataBuffer) {
+      this.mapPreview = DefaultContextHelper.parseMapInfo(message);
   }
 
   afterConnect() {
@@ -80,6 +96,7 @@ export default class GamesListView extends Vue {
     console.log('destroy')
     this.client.removeDefaultHandler(this.newChatMessage, DefaultContextHeaders.NEWMESSAGE);
     this.client.removeDefaultHandler(this.onGamesList, DefaultContextHeaders.GETGAMELIST);
+    this.client.removeDefaultHandler(this.onMapInfo, DefaultContextHeaders.MAPINFO);
 
     clearInterval(this.sendMessageInterval);
   }
@@ -145,10 +162,12 @@ export default class GamesListView extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.table-games-wrapper {
-  padding-left: 15%;
-  padding-right: 15%;
-  padding-top: 25px;
+.game-view {
+    display: flex;
+}
+
+.game-list-view {
   padding-bottom: 25px;
+  margin-left: 10%;
 }
 </style>

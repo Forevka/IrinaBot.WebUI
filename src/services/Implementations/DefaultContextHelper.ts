@@ -2,6 +2,7 @@ import DataBuffer from '@/utilities/DataBuffer';
 import { DefaultContextHeaders } from '@/models/enum/DefaultContextHeaders';
 import { ContextTypesHeaders } from '@/models/enum/ContextTypesHeaders';
 import { Player, Game } from '@/models/responses/GameModel';
+import GameMapPreviewModel from '@/models/responses/GameMapPreviewModel';
 
 export default class DefaultContextHelper {
 
@@ -108,15 +109,15 @@ export default class DefaultContextHelper {
 		return { "code": data.getInt8(), "description": data.getNullTerminatedString(), "password": data.getNullTerminatedString() };
 	}
 
-	public static recerveMapInfo(data: DataBuffer) {
-		var resp: any = {};
+	public static parseMapInfo(data: DataBuffer): GameMapPreviewModel {
+		let resp: GameMapPreviewModel = new GameMapPreviewModel();
 
 		resp.mapname = data.getNullTerminatedString();
 
-		var tgasize = data.getUint32();
+		let tgasize = data.getUint32();
 
 		resp.tga = new Uint8Array(data.getArray(tgasize)).buffer;
-		resp.autor = data.getNullTerminatedString();
+		resp.author = data.getNullTerminatedString();
 		resp.description = data.getNullTerminatedString();
 		resp.players = data.getNullTerminatedString();
 

@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <div id="nav"></div>
-    <b-loading :is-full-page="true" :active="isLoading" :can-cancel="false"></b-loading>
+    <b-loading :is-full-page="true" :active="isLoading" :can-cancel="false">
+    </b-loading>
     <NavBarComponent/>
     <router-view/>
   </div>
@@ -62,6 +63,10 @@ export default class App extends Vue {
 img {
   width: 100%;
   height: 100%;
+}
+
+html {  
+  background-color: rgba(50, 115, 220, 0.3) !important;
 }
 </style>
 

@@ -1,10 +1,12 @@
 <template>
+<div class="game-list">
   <section>
     <b-collapse
         aria-id="contentIdForA11y2"
         class="card"
         animation="slide"
-        :open.sync="isOpen">
+        :open.sync="isOpen"
+        >
         <div
             slot="trigger"
             :class="'card-header ' + getTableColor()"
@@ -18,7 +20,8 @@
             </a>
         </div>
         
-        <b-table 
+        <b-table
+            v-on:select="clicked"
             :data="gameList"
             :bordered="true"
             :striped="true"
@@ -74,12 +77,20 @@
         </b-table>
     </b-collapse>
     </section>
+</div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import client from "@/services/Implementations/ApiClient";
+import { IApiClient } from '../services/Abstractions/IApiClient';
 import { Game, Player } from '../models/responses/GameModel';
 import {playerColors} from "@/utilities/PlayerColors";
+import { DefaultContextHeaders } from '../models/enum/DefaultContextHeaders';
+import DataBuffer from '../utilities/DataBuffer';
+import DefaultContextHelper from '../services/Implementations/DefaultContextHelper';
+import GameMapPreviewModel from '../models/responses/GameMapPreviewModel';
+import GameMapPreviewComponent from '@/components/GameMapPreviewComponent.vue';
 
 @Component({
   components: {
@@ -97,6 +108,23 @@ export default class GameListComponent extends Vue {
 
     constructor() {
         super();
+    }
+
+    created() {
+        
+    }
+
+    beforeDestroy() {
+        
+    }
+
+    clicked(row: Game) {
+        if (row.gameCounter != this.selected.gameCounter)
+        {   
+            console.log("sending")
+            this.selected = row;
+            this.$emit("onrowchoose", this, this.selected)
+        }
     }
 
     sendToLocal(row) {
@@ -136,6 +164,11 @@ export default class GameListComponent extends Vue {
 </script>
 
 <style scoped lang="scss">
+.game-list {
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
 .table-name {
     width: 100%;
     text-align: center;
