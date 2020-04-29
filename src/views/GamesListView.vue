@@ -2,13 +2,13 @@
   <div class="game-list-view">
     <template class="game-list-view-wrapper" v-if="haveGames()">
       <div class="table-games-wrapper games-donated">
-        <GameListComponent :gameList="powerUpGames" :tableType="0"/>
+        <GameListComponent :gameList="powerUpGames()" :tableType="0"/>
       </div>
       <div class="table-games-wrapper games-not-started">
-        <GameListComponent :gameList="notStartedGames" :tableType="1"/>
+        <GameListComponent :gameList="notStartedGames()" :tableType="1"/>
       </div>
       <div class="table-games-wrapper games-started">
-        <GameListComponent :gameList="startedGames" :tableType="2"/>
+        <GameListComponent :gameList="startedGames()" :tableType="2"/>
       </div>
     </template>
   </div>
@@ -34,49 +34,59 @@ import GameListComponent from "@/components/GameListComponent.vue";
     GameListComponent
   }
 })
-export default class BoardView extends Vue {
+export default class GamesListView extends Vue {
   public client: IApiClient;
   private gameListInterval: number = 3;
 
   private gameList: Game[] = [];
+  private gameListIds: number[] = [];
 
-  private powerUpGames: Game[] = [];
+  /*private powerUpGames: Game[] = [];
   private startedGames: Game[] = [];
   private notStartedGames: Game[] = [];
 
+  private powerUpGamesIds: number[] = [];
+  private startedGamesIds: number[] = [];
+  private notStartedGamesIds: number[] = [];*/
+
+  private sendMessageInterval!: number;
+
   constructor() {
     super();
+  }
+
+  created() {
     this.gameList = [];
 
     this.client = client;
     this.client.addDefaultHandler(this.newChatMessage, DefaultContextHeaders.NEWMESSAGE)
     this.client.addDefaultHandler(this.onGamesList, DefaultContextHeaders.GETGAMELIST)
 
-    this.client.afterConnect(() => {
-      this.client.sendMessage(DefaultContextHelper.createGetGameList())
 
-      setInterval(()=> { 
-        this.client.sendMessage(DefaultContextHelper.createGetGameList())
-      }, this.gameListInterval * 1000);
-    })
-    
+    this.client.afterConnect(this.afterConnect)
+  }
+
+  afterConnect() {
+    this.sendGetMapList();
+
+    this.sendMessageInterval = setInterval(this.sendGetMapList, this.gameListInterval * 1000);
+  }
+
+  sendGetMapList() {
+    this.client.sendMessage(DefaultContextHelper.createGetGameList())
+  }
+
+  beforeDestroy() {
+    console.log('destroy')
+    this.client.removeDefaultHandler(this.newChatMessage, DefaultContextHeaders.NEWMESSAGE);
+    this.client.removeDefaultHandler(this.onGamesList, DefaultContextHeaders.GETGAMELIST);
+
+    clearInterval(this.sendMessageInterval);
   }
 
   haveGames() {
     return this.gameList.length > 0;
   }
-
-  /*notStarted() {
-    return this.gameList.filter(x => !x.isStarted)
-  }
-
-  powerUpGames() {
-    return this.gameList.filter(x => x.hasGamePowerUp && !x.isStarted);
-  }
-
-  startedGames() {
-    return this.gameList.filter(x => x.isStarted);
-  }*/
 
   newChatMessage(message: DataBuffer) {
     //console.log(message);
@@ -84,23 +94,20 @@ export default class BoardView extends Vue {
 
   onGamesList(message: DataBuffer) {
     let newGames = DefaultContextHelper.parseGameList(message);
+
+    let newGamesId = newGames.map(x => x.gameCounter);
+    let oldGamesId = this.gameList.map(x => x.gameCounter);
+
+    let difference = newGamesId.filter(x => oldGamesId.indexOf(x) == -1);
+
+    this.gameList = this.gameList.filter(xx => !difference.includes(xx.gameCounter))
+
     newGames.forEach(game => {
       let oldGame = this.gameList.find(x => x.gameCounter == game.gameCounter)
       if (oldGame === undefined) //NEW GAME
       {
         this.gameList.push(game);
-        if (game.hasGamePowerUp && !game.isStarted)
-        {
-          this.powerUpGames.push(game)
-        }
-        else if(!game.isStarted)
-        {
-          this.notStartedGames.push(game)
-        }else{
-          this.startedGames.push(game)
-        }
       }
-      //console.log(oldGame)
       else 
       {
         oldGame.players = game.players;
@@ -113,12 +120,25 @@ export default class BoardView extends Vue {
         oldGame.hasAdmin = game.hasAdmin;
         oldGame.gameTicks = game.gameTicks;
         oldGame.slotfslg = game.slotfslg;
+        oldGame.isStarted = game.isStarted;
       }
     });
   }
 
   onDefaultContextWelcome(message: DataBuffer) {
     //this.client.sendMessage(DefaultContextHelper.createGetGameList())
+  }
+
+  startedGames() {
+    return this.gameList.filter(x => x.isStarted);
+  }
+
+  powerUpGames() {
+    return this.gameList.filter(x => x.hasGamePowerUp && !x.isStarted);
+  }
+
+  notStartedGames() {
+    return this.gameList.filter(x => !x.isStarted)
   }
 
 }

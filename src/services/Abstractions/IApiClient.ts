@@ -8,5 +8,8 @@ export interface IApiClient {
     sendMessage(msg: ArrayBuffer): void;
     addDefaultHandler(callback: Function, header: DefaultContextHeaders): void;
     addGlobalHandler(callback: Function, header: GlobalContextHeaders): void;
+
+    removeDefaultHandler(callback: Function, header: DefaultContextHeaders): void
+    
     afterConnect(callback: Function): void;
 }

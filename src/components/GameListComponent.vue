@@ -10,7 +10,7 @@
             :class="'card-header ' + getTableColor()"
             role="button"
             aria-controls="contentIdForA11y2">
-            <p class="card-header-title">{{getTableName()}}</p>
+            <p class="card-header-title">{{getTableName() + " (" + gameList.length + ")"}}</p>
             <a class="card-header-icon">
                 <b-icon
                     :icon="isOpen ? 'menu-down' : 'menu-up'">
@@ -80,13 +80,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Game, Player } from '../models/responses/GameModel';
 import {playerColors} from "@/utilities/PlayerColors";
-/*
-<b-field grouped group-multiline>
-        <div :class="'table-name ' + getTableColor() ">
-            {{getTableName()}}
-        </div>
-    </b-field>
- */
+
 @Component({
   components: {
   }
@@ -95,8 +89,8 @@ export default class GameListComponent extends Vue {
     public selected: Game = new Game();
     public isOpen: boolean = true;
 
-    @Prop() gameList: Game[] = [];
-    @Prop() tableType: number = 0;
+    @Prop() gameList!: Game[];
+    @Prop() tableType!: number;
 
     private sortIcon: string = 'arrow-up';
     private sortIconSize: string = 'is-small';

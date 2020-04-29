@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <div id="nav"></div>
+    <b-loading :is-full-page="true" :active="isLoading" :can-cancel="false"></b-loading>
+    <NavBarComponent/>
     <router-view/>
   </div>
 </template>
@@ -14,27 +16,28 @@ import DataBuffer from './utilities/DataBuffer';
 import { DefaultContextHeaders } from './models/enum/DefaultContextHeaders';
 import { IApiClient } from './services/Abstractions/IApiClient';
 import DefaultContextHelper from './services/Implementations/DefaultContextHelper';
+import NavBarComponent from "@/components/NavBarComponent.vue";
 
 @Component({
-  components: {}
+  components: {
+    NavBarComponent
+  }
 })
 export default class App extends Vue {
   public client: IApiClient;
+
+  private isLoading: boolean = true;
 
   private pingInterval: number = 3;
 
   constructor() {
     super();
 
-    const loadingComponent = this.$buefy.loading.open({
-        container: this.$root.$el
-    })
-
     this.client = client;
     this.client.addDefaultHandler(this.onDefaultContextWelcome, DefaultContextHeaders.CONTEXTWELCOME)
 
     this.client.afterConnect(() => {
-      loadingComponent.close()
+      console.log("AFTER CONNECT")
 
       setInterval(()=> {
         this.sendPing() 
@@ -48,6 +51,7 @@ export default class App extends Vue {
 
   onDefaultContextWelcome(message: DataBuffer): void {
     console.log("WELCOME DEFAULT")
+    this.isLoading = false;
   }
 }
 </script>

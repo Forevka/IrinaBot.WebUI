@@ -28,7 +28,17 @@ class ApiClient implements IApiClient {
             this._afterConnectCallbacks.forEach(callback => {
                 callback();
             });
+
+            this._afterConnectCallbacks = [];
         };
+
+        this._client.onclose = () => {
+            this._isConnected = false;
+        }
+
+        this._client.onerror = () => {
+            this._isConnected = false;
+        }
 
         this._client.onmessage = (event: MessageEvent) => {
             this.onMessage(event);
@@ -39,7 +49,10 @@ class ApiClient implements IApiClient {
     }
 
     public afterConnect(callback: Function): void {
-        this._afterConnectCallbacks.push(callback);
+        if (this._isConnected === false)
+            this._afterConnectCallbacks.push(callback);
+        else
+            callback()
     }
 
     private onMessage(event: MessageEvent): void {
@@ -77,6 +90,10 @@ class ApiClient implements IApiClient {
             this._handlerDefaultContextList[header] = []
 
         this._handlerDefaultContextList[header].push(callback);
+    }
+
+    public removeDefaultHandler(callback: Function, header: DefaultContextHeaders): void {
+        this._handlerDefaultContextList[header] = this._handlerDefaultContextList[header].filter(x => x != callback);
     }
 
     public addGlobalHandler(callback: Function, header: GlobalContextHeaders): void {
