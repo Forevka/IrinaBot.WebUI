@@ -10,7 +10,10 @@ import setup from './utilities/math_round_extensions.js'
 import { VueNotification } from '@/types/AwnTypes';
 import VueDraggableResizable from 'vue-draggable-resizable'
 import VueAWN from "vue-awesome-notifications"
+import Buefy from 'buefy'
+import 'buefy/dist/buefy.css'
 
+Vue.use(Buefy)
 // optionally import default styles
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
 

@@ -5,12 +5,14 @@ import { Player, Game } from '@/models/responses/GameModel';
 
 export default class DefaultContextHelper {
 
-	public static parseGameList = function (data: DataBuffer) {
+	public static parseGameList(data: DataBuffer): Game[] {
 		var gamescount = data.getUint16();
-		var games: any[] = [];
+		var games: Game[] = [];
 
 		while (games.length < gamescount) {
 			let game = DefaultContextHelper.parseGame(data);
+			game.formatPlayers();
+			game.calcRealPlayersCount();
 			games.push(game);
 		}
 
@@ -132,7 +134,7 @@ export default class DefaultContextHelper {
 		return ab;
 	}
 
-	public static parseGame(data: DataBuffer): any {
+	public static parseGame(data: DataBuffer): Game {
 		let gameModel: Game = new Game();
 
 		gameModel.isStarted = data.getInt8();

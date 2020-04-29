@@ -12,6 +12,28 @@ export class Game {
     public maxPlayers: number;
     public playersCount: number;
     public players: Player[] = [];
+
+    public formattedPlayers: string;
+    public realPlayersCount: number;
+
+    public calcRealPlayersCount(): void {
+        this.realPlayersCount = 0;
+
+        this.players.forEach(player => {
+            if (player.name != "")
+            {
+                this.realPlayersCount += 1;
+            }
+        });
+    }
+
+    public formatPlayers(): void {
+        this.formattedPlayers = "";
+
+        this.players.forEach(element => {
+            this.formattedPlayers += " " + element.name;
+        });
+    }
 }
 
 export class Player {

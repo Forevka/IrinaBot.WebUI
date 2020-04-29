@@ -20,15 +20,23 @@ import DefaultContextHelper from './services/Implementations/DefaultContextHelpe
 })
 export default class App extends Vue {
   public client: IApiClient;
+
   private pingInterval: number = 3;
 
   constructor() {
     super();
+
+    const loadingComponent = this.$buefy.loading.open({
+        container: this.$root.$el
+    })
+
     this.client = client;
     this.client.addDefaultHandler(this.onDefaultContextWelcome, DefaultContextHeaders.CONTEXTWELCOME)
 
     this.client.afterConnect(() => {
-      setInterval(()=> { 
+      loadingComponent.close()
+
+      setInterval(()=> {
         this.sendPing() 
       }, this.pingInterval * 1000);
     })
