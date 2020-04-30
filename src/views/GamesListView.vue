@@ -13,7 +13,7 @@
         </div>
       </template>
     </div>
-    <game-map-preview-component :mapPreview="mapPreview" v-if="haveGames()"/>
+    <game-map-preview-component :mapPreview="mapPreview" :game="gameChosen" v-if="haveGames()"/>
   </div>
 </template>
 
@@ -44,6 +44,8 @@ export default class GamesListView extends Vue {
   public client: IApiClient;
 
   private mapPreview: GameMapPreviewModel = new GameMapPreviewModel();
+  private gameChosen: Game = new Game();
+
   private gameListInterval: number = 3;
 
   private gameList: Game[] = [];
@@ -56,8 +58,7 @@ export default class GamesListView extends Vue {
   }
 
   rowChoose(who, game: Game){
-    console.log(who)
-    console.log(game)
+    this.gameChosen = game;
     this.client.sendMessage(DefaultContextHelper.createGetMapInfo(game.gameCounter))
   }
 

@@ -5,11 +5,16 @@
         <div class="game-map-image">
             <img class="map-image" :src="image()" width="256" height="256">
         </div>
-        <div class="game-map-players">
-            Игроков: {{mapPreview.players}}
+        <div class="game-map-players" v-html="'Игроков: ' + parseWC3Tags(mapPreview.players)">
+            
         </div>
         <div class="game-map-description" v-html="parseWC3Tags(mapPreview.description)">
             
+        </div>
+        <div class="game-map-to-game" v-if="game.gameCounter !== undefined">
+            <b-button icon-left="gamepad" type="is-success"> 
+                Play!
+            </b-button>
         </div>
     </div>
 </template>
@@ -18,6 +23,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import GameMapPreviewModel from '../models/responses/GameMapPreviewModel';
 import ParseWc3Tags from "@/utilities/parse_wc3_tags";
+import { Game } from '../models/responses/GameModel';
 
 @Component({
   components: {
@@ -25,6 +31,7 @@ import ParseWc3Tags from "@/utilities/parse_wc3_tags";
 })
 export default class GameMapPreviewComponent extends Vue {
     @Prop() mapPreview!: GameMapPreviewModel;
+    @Prop() game!: Game;
 
     constructor() {
         super();
@@ -80,5 +87,12 @@ export default class GameMapPreviewComponent extends Vue {
 }
 .game-map-players {
     text-align: center;
+}
+
+.game-map-to-game {
+    button {
+        left: 50%;
+        transform: translate(-50%, 0%);
+    }
 }
 </style>

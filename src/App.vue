@@ -11,6 +11,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import client from '@/services/Implementations/ApiClient';
+import localClient from "@/services/Implementations/LocalClient";
 
 import eventBus from "@/utilities/EventBus";
 import DataBuffer from './utilities/DataBuffer';
@@ -18,6 +19,7 @@ import { DefaultContextHeaders } from './models/enum/DefaultContextHeaders';
 import { IApiClient } from './services/Abstractions/IApiClient';
 import DefaultContextHelper from './services/Implementations/DefaultContextHelper';
 import NavBarComponent from "@/components/NavBarComponent.vue";
+import ILocalClient from './services/Abstractions/ILocalClient';
 
 @Component({
   components: {
@@ -26,6 +28,7 @@ import NavBarComponent from "@/components/NavBarComponent.vue";
 })
 export default class App extends Vue {
   public client: IApiClient;
+  public localClient: ILocalClient;
 
   private isLoading: boolean = true;
 
@@ -33,8 +36,11 @@ export default class App extends Vue {
 
   constructor() {
     super();
+  }
 
+  created() {
     this.client = client;
+    this.localClient = localClient;
     this.client.addDefaultHandler(this.onDefaultContextWelcome, DefaultContextHeaders.CONTEXTWELCOME)
 
     this.client.afterConnect(() => {
@@ -44,8 +50,35 @@ export default class App extends Vue {
         this.sendPing() 
       }, this.pingInterval * 1000);
     })
+
+    this.localClient.afterConnect(() => {
+      this.$awn.success("Успешно подключился к коннектору!", {})
+    })
+
+    this.localClient.addHandler(this.gameAdded, 2)
+
+    console.log(this)
+    this.$on('localSocketClosed', this.localSocketClosed)
+  }
+
+  destroy() {
+    this.$off('localSocketClosed')
+  }
+
+  gameAdded() {
+    this.$awn.success("Игра добавлена, можешь найти её в локальной сети WC3", {})
   }
   
+  localSocketClosed() {
+    console.log('Пробую подключиться к ирина конектору через 10 сек...')
+    setTimeout(() => {
+      this.localClient.reconect()
+      this.localClient.afterConnect(() => {
+        this.$awn.success("Успешно подключился к коннектору!", {})
+      })
+    }, 10000)
+  }
+
   sendPing(): void {
     //this.client.sendMessage(DefaultContextHelper.C)
   }

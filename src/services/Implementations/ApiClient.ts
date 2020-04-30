@@ -8,7 +8,7 @@ import { DefaultContextHeaders } from "@/models/enum/DefaultContextHeaders";
 
 class ApiClient implements IApiClient {
     private _client: WebSocket;
-    private _websocketUrl: string = "ws://irinabot.ru/ghost/"
+    private _websocketUrl: string = "wss://irinabot.ru/ghost/"
 
     private _isConnected: boolean = false;
 
@@ -32,12 +32,16 @@ class ApiClient implements IApiClient {
             this._afterConnectCallbacks = [];
         };
 
-        this._client.onclose = () => {
+        this._client.onclose = (ev: Event) => {
             this._isConnected = false;
+            console.log('closing')
+            console.log(ev)
         }
 
-        this._client.onerror = () => {
+        this._client.onerror = (ev: Event) => {
             this._isConnected = false;
+            console.log('error')
+            console.log(ev)
         }
 
         this._client.onmessage = (event: MessageEvent) => {
