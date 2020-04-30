@@ -22,7 +22,7 @@
         
         <b-table
             v-on:select="clicked"
-            :data="gameList"
+            :data="gameListFiltered()"
             :bordered="true"
             :striped="true"
             :narrowed="true"
@@ -31,20 +31,24 @@
             :sort-icon-size="sortIconSize"
             default-sort="name"
             :loading="gameList.length === 0">
-            <b-input
-                v-if="!props.column.numeric"
-                slot="searchable"
-                slot-scope="props"
-                v-model="props.filters[props.column.field]"
-                placeholder="Поиск..."
-                icon="magnify"
-                size="is-small" />
             <template slot-scope="props">
-                <b-table-column width="30%" field="name" label="Имя игры" sortable searchable>
+                <b-table-column width="30%" field="name" label="Имя игры" sortable>
+                    <b-input
+                    slot="subheading"
+                    placeholder="Поиск..."
+                    v-model="gameNameValue"
+                    icon="magnify"
+                    size="is-small" />
                     {{ props.row.name }}
                 </b-table-column>
 
-                <b-table-column width="60%" field="formattedPlayers" label="Игроки" sortable searchable>
+                <b-table-column width="60%" field="formattedPlayers" label="Игроки" sortable>
+                    <b-input
+                    slot="subheading"
+                    placeholder="Поиск..."
+                    v-model="playerNameValue"
+                    icon="magnify"
+                    size="is-small" />
                     {{ props.row.formattedPlayers }} 
                 </b-table-column>
 
@@ -100,6 +104,9 @@ export default class GameListComponent extends Vue {
     public selected: Game = new Game();
     public isOpen: boolean = true;
 
+    private gameNameValue: string = "";
+    private playerNameValue: string = "";
+
     @Prop() gameList!: Game[];
     @Prop() tableType!: number;
 
@@ -112,6 +119,17 @@ export default class GameListComponent extends Vue {
 
     created() {
         
+    }
+
+    gameListFiltered() {
+        let toRet = this.gameList;
+        if (this.gameNameValue !== "")
+            toRet = toRet.filter(x => x.name.toLowerCase().includes(this.gameNameValue.toLowerCase()))
+        
+        if (this.playerNameValue !== "")
+            toRet = toRet.filter(x => x.formattedPlayers.toLowerCase().includes(this.playerNameValue.toLowerCase()))
+
+        return toRet;
     }
 
     beforeDestroy() {
