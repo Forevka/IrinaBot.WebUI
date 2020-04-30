@@ -29,6 +29,7 @@ import ILocalClient from './services/Abstractions/ILocalClient';
 export default class App extends Vue {
   public client: IApiClient;
   public localClient: ILocalClient;
+  public eventBus: any;
 
   private isLoading: boolean = true;
 
@@ -38,9 +39,10 @@ export default class App extends Vue {
     super();
   }
 
-  created() {
+  mounted() {
     this.client = client;
     this.localClient = localClient;
+    this.eventBus = eventBus;
     this.client.addDefaultHandler(this.onDefaultContextWelcome, DefaultContextHeaders.CONTEXTWELCOME)
 
     this.client.afterConnect(() => {
@@ -51,14 +53,18 @@ export default class App extends Vue {
       }, this.pingInterval * 1000);
     })
 
-    this.localClient.afterConnect(() => {
-      this.$awn.success("Успешно подключился к коннектору!", {})
-    })
-
     this.localClient.addHandler(this.gameAdded, 2)
 
     console.log(this)
     this.$on('localSocketClosed', this.localSocketClosed)
+    this.$on('localSocketError', this.localSocketError)
+    this.$on('localSocketConnected', this.localSocketConnected)
+
+    this.localClient.reconect();
+  }
+
+  localSocketConnected() {
+    this.$awn.success("Успешно подключился к коннектору!", {})
   }
 
   destroy() {
@@ -69,14 +75,18 @@ export default class App extends Vue {
     this.$awn.success("Игра добавлена, можешь найти её в локальной сети WC3", {})
   }
   
+  localSocketError() {
+    if (!this.localClient.isReconnecting())
+    {
+      setTimeout(() => {
+        this.localClient.reconectIfNeed()
+      }, 3000)
+    console.log('Пробую подключиться к коннектору через 3 сек...')
+    }
+  }
+
   localSocketClosed() {
-    console.log('Пробую подключиться к ирина конектору через 10 сек...')
-    setTimeout(() => {
-      this.localClient.reconect()
-      this.localClient.afterConnect(() => {
-        this.$awn.success("Успешно подключился к коннектору!", {})
-      })
-    }, 10000)
+    this.localSocketError();
   }
 
   sendPing(): void {

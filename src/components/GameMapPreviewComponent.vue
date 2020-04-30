@@ -25,6 +25,8 @@ import GameMapPreviewModel from '../models/responses/GameMapPreviewModel';
 import ParseWc3Tags from "@/utilities/parse_wc3_tags";
 import { Game } from '../models/responses/GameModel';
 
+
+
 @Component({
   components: {
   }
@@ -33,9 +35,14 @@ export default class GameMapPreviewComponent extends Vue {
     @Prop() mapPreview!: GameMapPreviewModel;
     @Prop() game!: Game;
 
+
     constructor() {
         super();
     }
+
+    created() {
+        
+    } 
 
     parseWC3Tags(tags: string) {
         return ParseWc3Tags(tags)

@@ -8,36 +8,35 @@ class LocalClient implements ILocalClient {
     private _websocketUrl: string = "ws://127.0.0.1:8148"
 
     private _isConnected: boolean = false;
+    public _isReconnecting: boolean = false;
 
     private _handlerList: Dictionary<Array<Function>> = {};
 
     private _afterConnectCallbacks: Array<Function> = [];
 
-    constructor() {
-        this.reconect()
-    }
-
     public reconect(): void {
-        try {
-            this._client = new WebSocket(this._websocketUrl)
-        }catch(err)
-        {
-            console.log('errr', err)
-        }
+        this._isReconnecting = true;
+        this._client = new WebSocket(this._websocketUrl)
         
 
         this._client.onopen = () => {
             this._isConnected = true;
+            this._isReconnecting = false;
             
             this._afterConnectCallbacks.forEach(callback => {
                 callback();
             });
 
             this._afterConnectCallbacks = [];
+            console.log(eventBus.mainApp)
+            eventBus.emit("localSocketConnected", {})
+            console.log(eventBus.mainApp)
         };
 
         this._client.onclose = (ev: Event) => {
             this._isConnected = false;
+            this._isReconnecting = false;
+
             console.log('closing')
             console.log(ev)
             eventBus.emit("localSocketClosed", {})
@@ -45,8 +44,10 @@ class LocalClient implements ILocalClient {
 
         this._client.onerror = (ev: Event) => {
             this._isConnected = false;
+
             console.log('error')
             console.log(ev)
+            eventBus.emit("localSocketError", {})
         }
 
         this._client.onmessage = (event: MessageEvent) => {
@@ -57,6 +58,10 @@ class LocalClient implements ILocalClient {
     public reconectIfNeed(): void {
         if (!this.isConnected())
             this.reconect();
+    }
+
+    public isReconnecting(): boolean {
+        return this._isReconnecting;
     }
 
     public isConnected(): boolean {
@@ -93,6 +98,8 @@ class LocalClient implements ILocalClient {
     }
 
     public addHandler(callback: Function, header: number): void {
+        if (this._handlerList[header] === undefined)
+            this._handlerList[header] = []
         this._handlerList[header].push(callback)
     }
 

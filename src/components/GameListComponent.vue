@@ -96,6 +96,7 @@ import DefaultContextHelper from '../services/Implementations/DefaultContextHelp
 import GameMapPreviewModel from '../models/responses/GameMapPreviewModel';
 import GameMapPreviewComponent from '@/components/GameMapPreviewComponent.vue';
 
+
 @Component({
   components: {
   }
@@ -122,6 +123,7 @@ export default class GameListComponent extends Vue {
     }
 
     gameListFiltered() {
+        console.log('filter')
         let toRet = this.gameList;
         if (this.gameNameValue !== "")
             toRet = toRet.filter(x => x.name.toLowerCase().includes(this.gameNameValue.toLowerCase()))

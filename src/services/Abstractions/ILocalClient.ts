@@ -6,4 +6,5 @@ export default interface ILocalClient {
     addHandler(callback: Function, header: number): void;
     removeHandler(callback: Function, header: number): void;
     sendMessage(msg: ArrayBuffer): void;
+    isReconnecting(): boolean;
 }

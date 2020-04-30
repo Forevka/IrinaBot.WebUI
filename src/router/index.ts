@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import GamesListView from '../views/GamesListView.vue'
+import GamesListView from '../views/GamesListView.vue';
 
 Vue.use(VueRouter)
 
@@ -10,6 +10,11 @@ const routes = [
     name: 'notfound',
     component: () => import('../views/NotFoundView.vue'),  
     props: true
+  },
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('../views/HomeView.vue'),
   },
   {
     path: '/games',
