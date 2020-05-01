@@ -4,7 +4,7 @@
     <b-collapse
         aria-id="contentIdForA11y2"
         class="card"
-        animation="slide"
+        
         :open.sync="isOpen"
         >
         <div
@@ -20,7 +20,7 @@
             </a>
         </div>
         
-        <b-table
+        <b-table v-if="isOpen"
             v-on:select="clicked"
             :data="gameListFiltered()"
             :bordered="true"
@@ -60,7 +60,7 @@
                 </b-table-column>
 
                 <b-table-column width="5%" field="play" centered>
-                    <b-button icon-left="gamepad" type="is-success"> 
+                    <b-button icon-left="gamepad" type="is-success" :disabled="!localClient.isConnected()"> 
                         Play!
                     </b-button>
                 </b-table-column>
@@ -95,7 +95,8 @@ import DataBuffer from '../utilities/DataBuffer';
 import DefaultContextHelper from '../services/Implementations/DefaultContextHelper';
 import GameMapPreviewModel from '../models/responses/GameMapPreviewModel';
 import GameMapPreviewComponent from '@/components/GameMapPreviewComponent.vue';
-
+import ILocalClient from '../services/Abstractions/ILocalClient';
+import localClient from '@/services/Implementations/LocalClient';
 
 @Component({
   components: {
@@ -108,6 +109,8 @@ export default class GameListComponent extends Vue {
     private gameNameValue: string = "";
     private playerNameValue: string = "";
 
+    private localClient: ILocalClient;
+
     @Prop() gameList!: Game[];
     @Prop() tableType!: number;
 
@@ -119,7 +122,7 @@ export default class GameListComponent extends Vue {
     }
 
     created() {
-        
+        this.localClient = localClient;
     }
 
     gameListFiltered() {
@@ -144,6 +147,7 @@ export default class GameListComponent extends Vue {
             console.log("sending")
             this.selected = row;
             this.$emit("onrowchoose", this, this.selected)
+            console.log("sending2")
         }
     }
 

@@ -20,8 +20,9 @@
 <script lang="ts">
 
 /*
-<GameComponent class="row" v-for="game in gameList" :key="game.gameCounter" :game=game>
-</GameComponent>
+<div class="table-games-wrapper games-started">
+  <GameListComponent :gameList="startedGames()" :tableType="2" @onrowchoose="rowChoose"/>
+</div>
  */
 import { Component, Prop, Vue } from "vue-property-decorator";
 import client from "@/services/Implementations/ApiClient";
@@ -156,7 +157,7 @@ export default class GamesListView extends Vue {
   }
 
   notStartedGames() {
-    return this.gameList.filter(x => !x.isStarted)
+    return this.gameList.filter(x => !x.isStarted && !x.hasGamePowerUp)
   }
 
 }

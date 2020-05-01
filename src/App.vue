@@ -136,3 +136,14 @@ html {
                                 supported by Chrome, Opera and Firefox */
 }
 </style>
+
+<style lang="scss">
+.table.is-narrow td, .table.is-narrow th {
+    padding: 0.1em .5em;
+    padding-bottom: 0 !important;
+}
+
+.table.is-narrow td, .table.is-narrow th {
+   padding: 0em 0.5em !important;
+}
+</style>
