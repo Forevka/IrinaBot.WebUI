@@ -19,9 +19,21 @@
                 </b-icon>
             </a>
         </div>
-        
+        <b-field grouped group-multiline style="margin-left: 10px;margin-top: 4px;margin-bottom: 4px;">
+            <b-select v-model="perPage">
+                <option value="10">10 per page</option>
+                <option value="15">15 per page</option>
+                <option value="20">20 per page</option>
+                <option value="25">25 per page</option>
+            </b-select>
+        </b-field>
         <b-table v-if="isOpen"
             v-on:select="clicked"
+            :paginated="true"
+            :pagination-simple="false"
+            :pagination-position="'bottom'"
+            :current-page="1"
+            :per-page="perPage"
             :data="gameListFiltered()"
             :bordered="true"
             :striped="true"
@@ -29,7 +41,8 @@
             :selected.sync="selected"
             :sort-icon="sortIcon"
             :sort-icon-size="sortIconSize"
-            default-sort="name"
+            default-sort="realPlayersCount"
+            default-sort-direction="desc"
             :loading="gameList.length === 0">
             <template slot-scope="props">
                 <b-table-column width="30%" field="name" label="Имя игры" sortable>
@@ -105,6 +118,7 @@ import localClient from '@/services/Implementations/LocalClient';
 export default class GameListComponent extends Vue {
     public selected: Game = new Game();
     public isOpen: boolean = true;
+    public perPage: number = 15;
 
     private gameNameValue: string = "";
     private playerNameValue: string = "";
@@ -113,6 +127,7 @@ export default class GameListComponent extends Vue {
 
     @Prop() gameList!: Game[];
     @Prop() tableType!: number;
+    @Prop() showByDefault!: boolean;
 
     private sortIcon: string = 'arrow-up';
     private sortIconSize: string = 'is-small';
@@ -123,6 +138,7 @@ export default class GameListComponent extends Vue {
 
     created() {
         this.localClient = localClient;
+        this.isOpen = this.showByDefault;
     }
 
     gameListFiltered() {

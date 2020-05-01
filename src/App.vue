@@ -146,4 +146,14 @@ html {
 .table.is-narrow td, .table.is-narrow th {
    padding: 0em 0.5em !important;
 }
+
+div.control {
+  margin-bottom: 0 !important;
+}
+
+div.b-table > div.level > div.level-right {
+  display: flex;
+  flex: auto;
+  justify-content: center;
+}
 </style>

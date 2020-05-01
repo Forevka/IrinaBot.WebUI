@@ -16,22 +16,16 @@ export class Game {
     public formattedPlayers: string;
     public realPlayersCount: number;
 
-    public calcRealPlayersCount(): void {
+    public calcPlayers(): void {
         this.realPlayersCount = 0;
+        this.formattedPlayers = "";
 
         this.players.forEach(player => {
             if (player.name != "")
             {
                 this.realPlayersCount += 1;
+                this.formattedPlayers += " " + player.name;
             }
-        });
-    }
-
-    public formatPlayers(): void {
-        this.formattedPlayers = "";
-
-        this.players.forEach(element => {
-            this.formattedPlayers += " " + element.name;
         });
     }
 }

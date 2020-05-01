@@ -12,8 +12,8 @@ export default class DefaultContextHelper {
 
 		while (games.length < gamescount) {
 			let game = DefaultContextHelper.parseGame(data);
-			game.formatPlayers();
-			game.calcRealPlayersCount();
+			//game.formatPlayers();
+			//game.calcRealPlayersCount();
 			games.push(game);
 		}
 

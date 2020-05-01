@@ -3,13 +3,13 @@
     <div class="game-list-view">
       <template class="game-list-view-wrapper" v-if="haveGames()">
         <div class="table-games-wrapper games-donated">
-          <GameListComponent :gameList="powerUpGames()" :tableType="0" @onrowchoose="rowChoose"/>
+          <GameListComponent :gameList="powerUpGames()" :tableType="0" @onrowchoose="rowChoose" :showByDefault="true"/>
         </div>
         <div class="table-games-wrapper games-not-started">
-          <GameListComponent :gameList="notStartedGames()" :tableType="1" @onrowchoose="rowChoose"/>
+          <GameListComponent :gameList="notStartedGames()" :tableType="1" @onrowchoose="rowChoose" :showByDefault="true"/>
         </div>
         <div class="table-games-wrapper games-started">
-          <GameListComponent :gameList="startedGames()" :tableType="2" @onrowchoose="rowChoose"/>
+          <GameListComponent :gameList="startedGames()" :tableType="2" @onrowchoose="rowChoose" :showByDefault="false"/>
         </div>
       </template>
     </div>
@@ -125,21 +125,26 @@ export default class GamesListView extends Vue {
       let oldGame = this.gameList.find(x => x.gameCounter == game.gameCounter)
       if (oldGame === undefined) //NEW GAME
       {
+        game.calcPlayers();
         this.gameList.push(game);
       }
       else 
       {
-        oldGame.players = game.players;
-        oldGame.playersCount = game.playersCount;
-        oldGame.formattedPlayers = game.formattedPlayers;
+        oldGame.isStarted = game.isStarted;
+        oldGame.name = game.name;
+        oldGame.hasAdmin = game.hasAdmin;
         oldGame.hasPassword = game.hasPassword;
         oldGame.hasGamePowerUp = game.hasGamePowerUp;
-        oldGame.name = game.name;
-        oldGame.maxPlayers = game.maxPlayers;
-        oldGame.hasAdmin = game.hasAdmin;
+        oldGame.gameCounter = game.gameCounter;
         oldGame.gameTicks = game.gameTicks;
+        oldGame.creatorId = game.creatorId;
+        oldGame.iccuphost = game.iccuphost;
         oldGame.slotfslg = game.slotfslg;
-        oldGame.isStarted = game.isStarted;
+        oldGame.maxPlayers = game.maxPlayers;
+        oldGame.playersCount = game.playersCount;
+        oldGame.players = game.players;
+
+        oldGame.calcPlayers();
       }
     });
   }
