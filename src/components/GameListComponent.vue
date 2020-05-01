@@ -26,6 +26,7 @@
                 <option value="20">20 per page</option>
                 <option value="25">25 per page</option>
             </b-select>
+            <b-checkbox v-model="dontShowFullGame">Не показывать фулл-пати</b-checkbox>
         </b-field>
         <b-table v-if="isOpen"
             v-on:select="clicked"
@@ -119,6 +120,7 @@ export default class GameListComponent extends Vue {
     public selected: Game = new Game();
     public isOpen: boolean = true;
     public perPage: number = 15;
+    public dontShowFullGame: boolean = false;
 
     private gameNameValue: string = "";
     private playerNameValue: string = "";
@@ -149,6 +151,12 @@ export default class GameListComponent extends Vue {
         
         if (this.playerNameValue !== "")
             toRet = toRet.filter(x => x.formattedPlayers.toLowerCase().includes(this.playerNameValue.toLowerCase()))
+        
+        if (this.dontShowFullGame === true)
+        {
+            let toDelete = toRet.filter(x => x.players.length === x.realPlayersCount).map(x => x.gameCounter);
+            toRet = toRet.filter(x => !toDelete.includes(x.gameCounter));
+        }
 
         return toRet;
     }
