@@ -175,6 +175,7 @@ export default class GamesListView extends Vue {
 
 .game-list-view {
   padding-bottom: 25px;
-  margin-left: 10%;
+  margin-left: 5%;
+  width: 80%;
 }
 </style>
