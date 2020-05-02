@@ -47,9 +47,6 @@ export default class GamesListView extends Vue {
 
   private gameListInterval: number = 3;
 
-  //private gameList: Game[] = [];
-  //private gameListIds: number[] = [];
-
   private sendMessageInterval!: number;
 
   private contextHelper: IDefaultContextHelper = new DefaultContextHelper();
@@ -72,9 +69,9 @@ export default class GamesListView extends Vue {
     this.mapPreview.players = "";
 
     this.client = client;
-    this.client.addDefaultHandler(this.newChatMessage, DefaultContextHeaders.NEWMESSAGE)
-    this.client.addDefaultHandler(this.onGamesList, DefaultContextHeaders.GETGAMELIST)
-    this.client.addDefaultHandler(this.onMapInfo, DefaultContextHeaders.MAPINFO)
+    this.client.addDefaultHandler(this.newChatMessage, DefaultContextHeaders.NewMessageAnswer)
+    this.client.addDefaultHandler(this.onGamesList, DefaultContextHeaders.GameListAnswer)
+    this.client.addDefaultHandler(this.onMapInfo, DefaultContextHeaders.MapInfoAnswer)
 
 
     this.client.afterConnect(this.afterConnect)
@@ -96,9 +93,9 @@ export default class GamesListView extends Vue {
 
   beforeDestroy() {
     console.log('destroy')
-    this.client.removeDefaultHandler(this.newChatMessage, DefaultContextHeaders.NEWMESSAGE);
-    this.client.removeDefaultHandler(this.onGamesList, DefaultContextHeaders.GETGAMELIST);
-    this.client.removeDefaultHandler(this.onMapInfo, DefaultContextHeaders.MAPINFO);
+    this.client.removeDefaultHandler(this.newChatMessage, DefaultContextHeaders.NewMessageAnswer);
+    this.client.removeDefaultHandler(this.onGamesList, DefaultContextHeaders.GameListAnswer);
+    this.client.removeDefaultHandler(this.onMapInfo, DefaultContextHeaders.MapInfoAnswer);
 
     clearInterval(this.sendMessageInterval);
   }

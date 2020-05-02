@@ -16,12 +16,13 @@ class ApiClient implements IApiClient {
 
     private _handlerDefaultContextList: Dictionary<Array<Function>> = {};
     private _handlerGlobalContextList: Dictionary<Array<Function>> = {};
+    private _handlerMapUploadContextList: Dictionary<Array<Function>> = {};
 
     private _afterConnectCallbacks: Array<Function> = [];
 
     constructor() {
         this._client = new WebSocket(this._websocketUrl)
-        //this._axiosClient.interceptors.response.use((response) => this.authTokenExpiredInterceptor(response))
+        
         this._client.onopen = () => {
             this._isConnected = true;
             
@@ -48,8 +49,9 @@ class ApiClient implements IApiClient {
             this.onMessage(event);
         }
 
-        this._handlersDict[ContextTypesHeaders.DEFAULTCONTEXT] = this._handlerDefaultContextList;
-        this._handlersDict[ContextTypesHeaders.GLOBALCONTEXT] = this._handlerGlobalContextList;
+        this._handlersDict[ContextTypesHeaders.DefaultContext] = this._handlerDefaultContextList;
+        this._handlersDict[ContextTypesHeaders.GlobalContext] = this._handlerGlobalContextList;
+        this._handlersDict[ContextTypesHeaders.MapUpload] = this._handlerMapUploadContextList;
     }
 
     public afterConnect(callback: Function): void {
@@ -65,9 +67,6 @@ class ApiClient implements IApiClient {
 
             let context = dataBuffer.getUint8();
             let header = dataBuffer.getUint8();
-
-            //console.log(context, header)
-            //console.log(this._handlersDict)
 
             let handlers = this._handlersDict[context];
             if (handlers === null || handlers === undefined) {
@@ -103,9 +102,25 @@ class ApiClient implements IApiClient {
     public addGlobalHandler(callback: Function, header: GlobalContextHeaders): void {
         let handlerList = this._handlerGlobalContextList[header]
         if (handlerList === null || handlerList === undefined)
-            this._handlerDefaultContextList[header] = []
+            this._handlerGlobalContextList[header] = []
 
         this._handlerGlobalContextList[header].push(callback);
+    }
+
+    public removeGlobalHandler(callback: Function, header: DefaultContextHeaders): void {
+        this._handlerGlobalContextList[header] = this._handlerGlobalContextList[header].filter(x => x != callback);
+    }
+
+    public addMapUploadHandler(callback: Function, header: GlobalContextHeaders): void {
+        let handlerList = this._handlerMapUploadContextList[header]
+        if (handlerList === null || handlerList === undefined)
+            this._handlerMapUploadContextList[header] = []
+
+        this._handlerMapUploadContextList[header].push(callback);
+    }
+
+    public removeMapUploadHandler(callback: Function, header: DefaultContextHeaders): void {
+        this._handlerMapUploadContextList[header] = this._handlerMapUploadContextList[header].filter(x => x != callback);
     }
 
     public sendMessage(msg: ArrayBuffer): void {
@@ -113,22 +128,6 @@ class ApiClient implements IApiClient {
         if (this._isConnected)
             this._client.send(msg);
     }
-
-    /*private authTokenExpiredInterceptor(response: AxiosResponse<any>): AxiosResponse<any> {
-        if (response.status === 401)
-            console.log('unathorized')
-
-        return response;
-    }
-
-
-    async get<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
-        return this._axiosClient.get<T, R>(url, config);
-    }
-
-    async post<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
-        return this._axiosClient.post<T, R>(url, data, config);
-    }*/
 }
 
 export default new ApiClient();

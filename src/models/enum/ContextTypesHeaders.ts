@@ -1,4 +1,5 @@
 export enum ContextTypesHeaders {
-    GLOBALCONTEXT = 0x00,
-    DEFAULTCONTEXT = 0x01,
+    GlobalContext = 0x00,
+    DefaultContext = 0x01,
+    MapUpload = 0x02,
 }
