@@ -4,7 +4,7 @@ import { GlobalContextHeaders } from '@/models/enum/GlobalContextHeaders';
 import { ContextTypesHeaders } from '@/models/enum/ContextTypesHeaders';
 import UserAuthModel from '@/models/responses/UserAuthModel';
 import IntegrationByTokenModel from '@/models/responses/IntegrationByTokenModel';
-import { IGlobalContextHelper } from '../Abstractions/IGlobalContextHelper';
+import IGlobalContextHelper from '../Abstractions/IGlobalContextHelper';
 
 export default class GlobalContextHelper implements IGlobalContextHelper {
 
