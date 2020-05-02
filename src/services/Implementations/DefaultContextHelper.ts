@@ -3,15 +3,18 @@ import { DefaultContextHeaders } from '@/models/enum/DefaultContextHeaders';
 import { ContextTypesHeaders } from '@/models/enum/ContextTypesHeaders';
 import { Player, Game } from '@/models/responses/GameModel';
 import GameMapPreviewModel from '@/models/responses/GameMapPreviewModel';
+import CreateGameModel from '@/models/responses/CreateGameModel';
+import MessageModel from '@/models/responses/MessageModel';
+import { IDefaultContextHelper } from '../Abstractions/IDefaultContextHelper';
 
-export default class DefaultContextHelper {
+export default class DefaultContextHelper implements IDefaultContextHelper {
 
-	public static parseGameList(data: DataBuffer): Game[] {
+	public parseGameList(data: DataBuffer): Game[] {
 		var gamescount = data.getUint16();
 		var games: Game[] = [];
 
 		while (games.length < gamescount) {
-			let game = DefaultContextHelper.parseGame(data);
+			let game = this.parseGame(data);
 			//game.formatPlayers();
 			//game.calcRealPlayersCount();
 			games.push(game);
@@ -20,9 +23,8 @@ export default class DefaultContextHelper {
 		return games;
 	}
 
-	// Send Packages;
 
-	public static createContextRequest() {
+	public createContextRequest(): ArrayBuffer {
 		var ab = new ArrayBuffer(3);
 		var df = new DataView(ab);
 		df.setInt8(0, 0); // GLOBAL CONTEXT
@@ -32,7 +34,7 @@ export default class DefaultContextHelper {
 		return ab;
 	}
 
-	public static createGetGameList() {
+	public createGetGameList(): ArrayBuffer {
 		var ab = new ArrayBuffer(2);
 		var df = new DataView(ab);
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
@@ -41,7 +43,7 @@ export default class DefaultContextHelper {
 		return ab;
 	}
 
-	public static createGetGameUDP(isPrivateKey, gameid, gamepassword) {
+	public createGetGameUDP(isPrivateKey: number, gameid: number, gamepassword: string): Blob {
 		var ab = new ArrayBuffer(7);
 		var df = new DataView(ab);
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
@@ -52,7 +54,7 @@ export default class DefaultContextHelper {
 		return new Blob([ab, gamepassword, new ArrayBuffer(1)]);
 	}
 
-	public static createGameSignal(gameid, signal) {
+	public createGameSignal(gameid: number, signal: string): Blob {
 		var ab = new ArrayBuffer(6);
 		var df = new DataView(ab);
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
@@ -63,22 +65,23 @@ export default class DefaultContextHelper {
 	}
 
 
-	public static createWsConnect() {
-		var ab = new ArrayBuffer(2);
-		var df = new DataView(ab);
+	public createWsConnect(): ArrayBuffer {
+		let ab = new ArrayBuffer(2);
+		let df = new DataView(ab);
+
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
 		df.setInt8(1, DefaultContextHeaders.GETWEBSOCKETCONNECT);
 
 		return ab;
 	}
 
-	public static createCreateGame(fullprovate, map, gamename, owner, patch, flags) {
-		var ab = new ArrayBuffer(7);
-		var df = new DataView(ab);
+	public createCreateGame(fullprivate: boolean, map: string, gamename: string, owner: string, patch: number, flags: number): Blob {
+		let ab = new ArrayBuffer(7);
+		let df = new DataView(ab);
 
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
 		df.setInt8(1, DefaultContextHeaders.CREATEGAME);
-		if (fullprovate)
+		if (fullprivate)
 			df.setInt8(2, 1);
 		df.setInt8(3, patch);
 		df.setInt8(4, 0); // Find CFG
@@ -88,28 +91,41 @@ export default class DefaultContextHelper {
 	}
 
 
-	public static recerveWsConnect(databuffer: DataBuffer) {
+	public parseWsConnect(databuffer: DataBuffer): number {
 		return databuffer.getInt32();
 	}
 
-	public static sendMessage(mFrom, mTo, mText) {
-		var ab = new ArrayBuffer(2);
-		var df = new DataView(ab);
+	public createMessage(mFrom: string, mTo: string, mText: string): Blob {
+		let ab = new ArrayBuffer(2);
+		let df = new DataView(ab);
 
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
 		df.setInt8(1, DefaultContextHeaders.SENDMESSAGE);
+
 		return new Blob([ab, mTo, new ArrayBuffer(1), mFrom, new ArrayBuffer(1), mText, new ArrayBuffer(1)]);
 	}
 
-	public static recerveMessage(data: DataBuffer) {
-		return { "mTo": data.getNullTerminatedString(), "mFrom": data.getNullTerminatedString(), "mText": data.getNullTerminatedString() };
+	public parseMessage(data: DataBuffer): MessageModel {
+		let res: MessageModel = new MessageModel();
+
+		res.mTo = data.getNullTerminatedString();
+		res.mFrom = data.getNullTerminatedString();
+		res.mText = data.getNullTerminatedString();
+
+		return res;
 	}
 
-	public static recerveCreateGameResponse(data: DataBuffer) {
-		return { "code": data.getInt8(), "description": data.getNullTerminatedString(), "password": data.getNullTerminatedString() };
+	public parseCreateGameResponse(data: DataBuffer): CreateGameModel {
+		let res: CreateGameModel = new CreateGameModel()
+
+		res.code = data.getInt8();
+		res.description = data.getNullTerminatedString();
+		res.password = data.getNullTerminatedString();
+
+		return res;
 	}
 
-	public static parseMapInfo(data: DataBuffer): GameMapPreviewModel {
+	public parseMapInfo(data: DataBuffer): GameMapPreviewModel {
 		let resp: GameMapPreviewModel = new GameMapPreviewModel();
 
 		resp.mapname = data.getNullTerminatedString();
@@ -125,9 +141,10 @@ export default class DefaultContextHelper {
 	}
 
 
-	public static createGetMapInfo(gameid) {
+	public createGetMapInfo(gameid: number): ArrayBuffer {
 		var ab = new ArrayBuffer(7);
 		var df = new DataView(ab);
+
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
 		df.setInt8(1, DefaultContextHeaders.GETMAPINFO);
 		df.setInt32(2, gameid, true);
@@ -135,7 +152,7 @@ export default class DefaultContextHelper {
 		return ab;
 	}
 
-	public static parseGame(data: DataBuffer): Game {
+	public parseGame(data: DataBuffer): Game {
 		let gameModel: Game = new Game();
 
 		gameModel.isStarted = data.getInt8();
@@ -155,14 +172,14 @@ export default class DefaultContextHelper {
 			gameModel.hasAdmin = true;*/
 
 		while (gameModel.players.length < gameModel.playersCount)
-			gameModel.players.push(DefaultContextHelper.parseGamePlayer(data));
+			gameModel.players.push(this.parseGamePlayer(data));
 
 		return gameModel;
 	}
 
 
 
-	public static parseGamePlayer(data: DataBuffer): Player {
+	public parseGamePlayer(data: DataBuffer): Player {
 		let gamePlayer: Player = new Player();
 
 		gamePlayer.color = data.getUint8();

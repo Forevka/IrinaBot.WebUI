@@ -20,12 +20,9 @@
             </a>
         </div>
         <b-field grouped group-multiline style="margin-left: 10px;margin-top: 4px;margin-bottom: 4px;">
-            <b-select v-model="perPage">
-                <option value="10">10 per page</option>
-                <option value="15">15 per page</option>
-                <option value="20">20 per page</option>
-                <option value="25">25 per page</option>
-            </b-select>
+            <b-field label="Игр показывать">
+                <b-numberinput v-model="perPage" size="is-small" controls-position="compact" v-on:input="storeSettings()"/>
+            </b-field>
             <b-checkbox v-model="dontShowFullGame">Не показывать фулл-пати</b-checkbox>
         </b-field>
         <b-table v-if="isOpen"
@@ -99,11 +96,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import client from "@/services/Implementations/ApiClient";
 import { IApiClient } from '../services/Abstractions/IApiClient';
 import { Game, Player } from '../models/responses/GameModel';
-import {playerColors} from "@/utilities/PlayerColors";
+import { playerColors } from "@/utilities/PlayerColors";
 import { DefaultContextHeaders } from '../models/enum/DefaultContextHeaders';
 import DataBuffer from '../utilities/DataBuffer';
 import DefaultContextHelper from '../services/Implementations/DefaultContextHelper';
@@ -119,7 +116,7 @@ import localClient from '@/services/Implementations/LocalClient';
 export default class GameListComponent extends Vue {
     public selected: Game = new Game();
     public isOpen: boolean = true;
-    public perPage: number = 15;
+    public perPage: number;
     public dontShowFullGame: boolean = false;
 
     private gameNameValue: string = "";
@@ -136,6 +133,23 @@ export default class GameListComponent extends Vue {
 
     constructor() {
         super();
+        this.loadSettings()
+    }
+    
+    storeSettings() {
+        let key: string = `gameListComponent_${this.tableType}`
+
+        localStorage.setItem(key + "perPage", this.perPage.toString())
+    }
+
+    loadSettings() {
+        let key: string = `gameListComponent_${this.tableType}`
+
+        let perPage = localStorage.getItem(key + "perPage");
+        if (perPage !== null)
+            this.perPage = Number(perPage);
+        else
+            this.perPage = 20;
     }
 
     created() {

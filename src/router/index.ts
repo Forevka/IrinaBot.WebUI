@@ -22,6 +22,11 @@ const routes = [
     component: GamesListView
   },
   {
+    path: '/discord',
+    name: 'discordAuth',
+    component: () => import('../views/DiscordAuthView.vue')
+  },
+  {
     path: '*',
     name: 'notfound_wildcard',
     component: () => import('../views/NotFoundView.vue')

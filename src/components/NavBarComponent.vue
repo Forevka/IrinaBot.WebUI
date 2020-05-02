@@ -12,10 +12,7 @@
         <template slot="end">
             <b-navbar-item tag="div">
                 <div class="buttons">
-                    <a class="button is-primary">
-                        <strong>Sign up</strong>
-                    </a>
-                    <a class="button is-light">
+                    <a class="button is-light" @click="login()">
                         Log in
                     </a>
                 </div>
@@ -28,14 +25,22 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Game, Player } from '../models/responses/GameModel';
 import {playerColors} from "@/utilities/PlayerColors";
+//import DiscordOauth2 from 'discord-oauth2';
 
 @Component({
   components: {
   }
 })
 export default class NavBarComponent extends Vue {
+    //public discord: DiscordOauth2 = new DiscordOauth2();
+
     constructor() {
         super();
+    }
+
+    login() {
+        console.log('login')
+        window.open('https://discordapp.com/oauth2/authorize?client_id=517423360091881484&redirect_uri=https%3A%2F%2Firinabo.ru%2Fdiscord%2F&response_type=token&scope=identify%20guilds.join')
     }
 }
 </script>

@@ -18,12 +18,6 @@
 </template>
 
 <script lang="ts">
-
-/*
-<div class="table-games-wrapper games-started">
-  <GameListComponent :gameList="startedGames()" :tableType="2" @onrowchoose="rowChoose"/>
-</div>
- */
 import { Component, Prop, Vue } from "vue-property-decorator";
 import client from "@/services/Implementations/ApiClient";
 import { IApiClient } from '../services/Abstractions/IApiClient';
@@ -34,6 +28,7 @@ import { Game } from '../models/responses/GameModel';
 import GameListComponent from "@/components/GameListComponent.vue";
 import GameMapPreviewModel from '../models/responses/GameMapPreviewModel';
 import GameMapPreviewComponent from '@/components/GameMapPreviewComponent.vue';
+import { IDefaultContextHelper } from '../services/Abstractions/IDefaultContextHelper';
 
 @Component({
   components: {
@@ -54,13 +49,15 @@ export default class GamesListView extends Vue {
 
   private sendMessageInterval!: number;
 
+  private contextHelper: IDefaultContextHelper = new DefaultContextHelper();
+
   constructor() {
     super();
   }
 
   rowChoose(who, game: Game){
     this.gameChosen = game;
-    this.client.sendMessage(DefaultContextHelper.createGetMapInfo(game.gameCounter))
+    this.client.sendMessage(this.contextHelper.createGetMapInfo(game.gameCounter))
   }
 
   created() {
@@ -81,7 +78,7 @@ export default class GamesListView extends Vue {
   }
 
   onMapInfo(message: DataBuffer) {
-      this.mapPreview = DefaultContextHelper.parseMapInfo(message);
+      this.mapPreview = this.contextHelper.parseMapInfo(message);
   }
 
   afterConnect() {
@@ -91,7 +88,7 @@ export default class GamesListView extends Vue {
   }
 
   sendGetMapList() {
-    this.client.sendMessage(DefaultContextHelper.createGetGameList())
+    this.client.sendMessage(this.contextHelper.createGetGameList())
   }
 
   beforeDestroy() {
@@ -112,7 +109,7 @@ export default class GamesListView extends Vue {
   }
 
   onGamesList(message: DataBuffer) {
-    let newGames = DefaultContextHelper.parseGameList(message);
+    let newGames = this.contextHelper.parseGameList(message);
 
     let newGamesId = newGames.map(x => x.gameCounter);
     let oldGamesId = this.gameList.map(x => x.gameCounter);
