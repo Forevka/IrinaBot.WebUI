@@ -156,4 +156,8 @@ div.b-table > div.level > div.level-right {
   flex: auto;
   justify-content: center;
 }
+
+.splitpanes__pane {
+  background: rgba(50, 115, 220, 0.3) !important;
+}
 </style>

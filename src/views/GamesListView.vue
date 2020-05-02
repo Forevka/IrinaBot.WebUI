@@ -1,20 +1,26 @@
 <template>
-  <div class="game-view">
-    <div class="game-list-view">
-      <template class="game-list-view-wrapper" v-if="haveGames()">
-        <div class="table-games-wrapper games-donated">
-          <GameListComponent :gameList="powerUpGames()" :tableType="0" @onrowchoose="rowChoose" :showByDefault="true"/>
-        </div>
-        <div class="table-games-wrapper games-not-started">
-          <GameListComponent :gameList="notStartedGames()" :tableType="1" @onrowchoose="rowChoose" :showByDefault="true"/>
-        </div>
-        <div class="table-games-wrapper games-started">
-          <GameListComponent :gameList="startedGames()" :tableType="2" @onrowchoose="rowChoose" :showByDefault="false"/>
-        </div>
-      </template>
-    </div>
-    <game-map-preview-component :mapPreview="mapPreview" :game="gameChosen" v-if="haveGames()"/>
-  </div>
+<div class="game-view">
+  <splitpanes class="default-theme">
+    <pane min-size="70" max-size="90" size="80">
+      <div class="game-list-view">
+        <template class="game-list-view-wrapper" v-if="haveGames()">
+          <div class="table-games-wrapper games-donated">
+            <GameListComponent :gameList="powerUpGames()" :tableType="0" @onrowchoose="rowChoose" :showByDefault="true"/>
+          </div>
+          <div class="table-games-wrapper games-not-started">
+            <GameListComponent :gameList="notStartedGames()" :tableType="1" @onrowchoose="rowChoose" :showByDefault="true"/>
+          </div>
+          <div class="table-games-wrapper games-started">
+            <GameListComponent :gameList="startedGames()" :tableType="2" @onrowchoose="rowChoose" :showByDefault="false"/>
+          </div>
+        </template>
+      </div>
+    </pane>
+    <pane>
+      <game-map-preview-component :mapPreview="mapPreview" :game="gameChosen" v-if="haveGames()"/>
+    </pane>
+  </splitpanes>
+</div>
 </template>
 
 <script lang="ts">
@@ -35,10 +41,15 @@ import GameListComponent from "@/components/GameListComponent.vue";
 import GameMapPreviewModel from '../models/responses/GameMapPreviewModel';
 import GameMapPreviewComponent from '@/components/GameMapPreviewComponent.vue';
 
+import { Splitpanes, Pane } from 'splitpanes'
+import 'splitpanes/dist/splitpanes.css'
+
 @Component({
   components: {
     GameListComponent,
-    GameMapPreviewComponent
+    GameMapPreviewComponent,
+    Splitpanes, 
+    Pane,
   }
 })
 export default class GamesListView extends Vue {
@@ -175,7 +186,8 @@ export default class GamesListView extends Vue {
 
 .game-list-view {
   padding-bottom: 25px;
-  margin-left: 5%;
-  width: 80%;
+  //margin-left: 5%;
+  margin-right: 5%;
+  width: 100%;
 }
 </style>
