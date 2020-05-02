@@ -3,13 +3,13 @@
     <div class="game-list-view">
       <template class="game-list-view-wrapper" v-if="haveGames()">
         <div class="table-games-wrapper games-donated">
-          <GameListComponent :gameList="powerUpGames()" :tableType="0" @onrowchoose="rowChoose" :showByDefault="true"/>
+          <GameListComponent :gameList="gamePool.powerUpGames()" :tableType="0" @onrowchoose="rowChoose" :showByDefault="true"/>
         </div>
         <div class="table-games-wrapper games-not-started">
-          <GameListComponent :gameList="notStartedGames()" :tableType="1" @onrowchoose="rowChoose" :showByDefault="true"/>
+          <GameListComponent :gameList="gamePool.notStartedGames()" :tableType="1" @onrowchoose="rowChoose" :showByDefault="true"/>
         </div>
         <div class="table-games-wrapper games-started">
-          <GameListComponent :gameList="startedGames()" :tableType="2" @onrowchoose="rowChoose" :showByDefault="false"/>
+          <GameListComponent :gameList="gamePool.startedGames()" :tableType="2" @onrowchoose="rowChoose" :showByDefault="false"/>
         </div>
       </template>
     </div>
@@ -29,6 +29,7 @@ import GameListComponent from "@/components/GameListComponent.vue";
 import GameMapPreviewModel from '../models/responses/GameMapPreviewModel';
 import GameMapPreviewComponent from '@/components/GameMapPreviewComponent.vue';
 import { IDefaultContextHelper } from '../services/Abstractions/IDefaultContextHelper';
+import GamePool from '@/utilities/GamePool';
 
 @Component({
   components: {
@@ -39,13 +40,15 @@ import { IDefaultContextHelper } from '../services/Abstractions/IDefaultContextH
 export default class GamesListView extends Vue {
   public client: IApiClient;
 
+  private gamePool: GamePool = new GamePool();
+
   private mapPreview: GameMapPreviewModel = new GameMapPreviewModel();
   private gameChosen: Game = new Game();
 
   private gameListInterval: number = 3;
 
-  private gameList: Game[] = [];
-  private gameListIds: number[] = [];
+  //private gameList: Game[] = [];
+  //private gameListIds: number[] = [];
 
   private sendMessageInterval!: number;
 
@@ -61,7 +64,7 @@ export default class GamesListView extends Vue {
   }
 
   created() {
-    this.gameList = [];
+    //this.gameList = [];
     this.mapPreview.mapname = "Выбери карту со списка слева";
     this.mapPreview.tga = new ArrayBuffer(0);
     this.mapPreview.author = "";
@@ -101,7 +104,7 @@ export default class GamesListView extends Vue {
   }
 
   haveGames() {
-    return this.gameList.length > 0;
+    return this.gamePool.gameList.length > 0;
   }
 
   newChatMessage(message: DataBuffer) {
@@ -109,57 +112,15 @@ export default class GamesListView extends Vue {
   }
 
   onGamesList(message: DataBuffer) {
+    console.time('parseGameList')
     let newGames = this.contextHelper.parseGameList(message);
 
-    let newGamesId = newGames.map(x => x.gameCounter);
-    let oldGamesId = this.gameList.map(x => x.gameCounter);
-
-    let difference = newGamesId.filter(x => oldGamesId.indexOf(x) == -1);
-
-    this.gameList = this.gameList.filter(xx => !difference.includes(xx.gameCounter))
-
-    newGames.forEach(game => {
-      let oldGame = this.gameList.find(x => x.gameCounter == game.gameCounter)
-      if (oldGame === undefined) //NEW GAME
-      {
-        game.calcPlayers();
-        this.gameList.push(game);
-      }
-      else 
-      {
-        oldGame.isStarted = game.isStarted;
-        oldGame.name = game.name;
-        oldGame.hasAdmin = game.hasAdmin;
-        oldGame.hasPassword = game.hasPassword;
-        oldGame.hasGamePowerUp = game.hasGamePowerUp;
-        oldGame.gameCounter = game.gameCounter;
-        oldGame.gameTicks = game.gameTicks;
-        oldGame.creatorId = game.creatorId;
-        oldGame.iccuphost = game.iccuphost;
-        oldGame.slotfslg = game.slotfslg;
-        oldGame.maxPlayers = game.maxPlayers;
-        oldGame.playersCount = game.playersCount;
-        oldGame.players = game.players;
-
-        oldGame.calcPlayers();
-      }
-    });
+    this.gamePool.newGames(newGames);
+    console.timeEnd('parseGameList')
   }
 
   onDefaultContextWelcome(message: DataBuffer) {
     //this.client.sendMessage(DefaultContextHelper.createGetGameList())
-  }
-
-  startedGames() {
-    return this.gameList.filter(x => x.isStarted);
-  }
-
-  powerUpGames() {
-    return this.gameList.filter(x => x.hasGamePowerUp && !x.isStarted);
-  }
-
-  notStartedGames() {
-    return this.gameList.filter(x => !x.isStarted && !x.hasGamePowerUp)
   }
 
 }
