@@ -5,6 +5,7 @@ import { ContextTypesHeaders } from "@/models/enum/ContextTypesHeaders";
 
 import { GlobalContextHeaders } from "@/models/enum/GlobalContextHeaders";
 import { DefaultContextHeaders } from "@/models/enum/DefaultContextHeaders";
+import { MapUploaderContextHeaders } from '@/models/enum/MapUploadContextHeaders';
 
 class ApiClient implements IApiClient {
     private _client: WebSocket;
@@ -35,14 +36,10 @@ class ApiClient implements IApiClient {
 
         this._client.onclose = (ev: Event) => {
             this._isConnected = false;
-            console.log('closing')
-            console.log(ev)
         }
 
         this._client.onerror = (ev: Event) => {
             this._isConnected = false;
-            console.log('error')
-            console.log(ev)
         }
 
         this._client.onmessage = (event: MessageEvent) => {
@@ -111,7 +108,7 @@ class ApiClient implements IApiClient {
         this._handlerGlobalContextList[header] = this._handlerGlobalContextList[header].filter(x => x != callback);
     }
 
-    public addMapUploadHandler(callback: Function, header: GlobalContextHeaders): void {
+    public addMapUploadHandler(callback: Function, header: MapUploaderContextHeaders): void {
         let handlerList = this._handlerMapUploadContextList[header]
         if (handlerList === null || handlerList === undefined)
             this._handlerMapUploadContextList[header] = []
@@ -119,11 +116,11 @@ class ApiClient implements IApiClient {
         this._handlerMapUploadContextList[header].push(callback);
     }
 
-    public removeMapUploadHandler(callback: Function, header: DefaultContextHeaders): void {
+    public removeMapUploadHandler(callback: Function, header: MapUploaderContextHeaders): void {
         this._handlerMapUploadContextList[header] = this._handlerMapUploadContextList[header].filter(x => x != callback);
     }
 
-    public sendMessage(msg: ArrayBuffer): void {
+    public sendMessage(msg: ArrayBuffer | Blob): void {
         //console.log(msg)
         if (this._isConnected)
             this._client.send(msg);

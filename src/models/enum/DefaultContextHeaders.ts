@@ -15,7 +15,7 @@ export enum DefaultContextHeaders {
     SendExternalGameSignalRequest = 0x02,
     UpdGameRequest = 0x03,
     CreateGameRequest = 0x04,
-    GetWebcoketSonnectedRequest = 0x05,
+    GetWebcoketConnectedRequest = 0x05,
     SendMessageRequest = 0x0C,
     MapInfoRequest = 0x0D,
 

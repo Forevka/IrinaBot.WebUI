@@ -30,7 +30,7 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 
 		df.setInt8(0, 0); // GLOBAL CONTEXT
 		df.setInt8(1, 1); // CONTEXT REQ
-		df.setInt8(2, ContextTypesHeaders.DEFAULTCONTEXT);
+		df.setInt8(2, ContextTypesHeaders.DefaultContext);
 
 		return ab;
 	}
@@ -39,8 +39,8 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 		let ab = new ArrayBuffer(2);
 		let df = new DataView(ab);
 
-		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
-		df.setInt8(1, DefaultContextHeaders.GETGAMELIST);
+		df.setInt8(0, ContextTypesHeaders.DefaultContext);
+		df.setInt8(1, DefaultContextHeaders.GameListRequest);
 
 		return ab;
 	}
@@ -49,8 +49,8 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 		let ab = new ArrayBuffer(7);
 		let df = new DataView(ab);
 
-		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
-		df.setInt8(1, DefaultContextHeaders.GETUDPGAE);
+		df.setInt8(0, ContextTypesHeaders.DefaultContext);
+		df.setInt8(1, DefaultContextHeaders.UpdGameRequest);
 		df.setInt8(2, isPrivateKey);
 		df.setInt32(3, gameid, true);
 
@@ -61,8 +61,8 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 		let ab = new ArrayBuffer(6);
 		let df = new DataView(ab);
 		
-		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
-		df.setInt8(1, DefaultContextHeaders.SENDGAMEEXTERNALSIGNAL);
+		df.setInt8(0, ContextTypesHeaders.DefaultContext);
+		df.setInt8(1, DefaultContextHeaders.SendExternalGameSignalRequest);
 		df.setInt32(2, gameid, true);
 
 		return new Blob([ab, signal, new ArrayBuffer(1)]);
@@ -73,8 +73,8 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 		let ab = new ArrayBuffer(2);
 		let df = new DataView(ab);
 
-		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
-		df.setInt8(1, DefaultContextHeaders.GETWEBSOCKETCONNECT);
+		df.setInt8(0, ContextTypesHeaders.DefaultContext);
+		df.setInt8(1, DefaultContextHeaders.GetWebcoketConnectedRequest);
 
 		return ab;
 	}
@@ -83,8 +83,8 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 		let ab = new ArrayBuffer(7);
 		let df = new DataView(ab);
 
-		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
-		df.setInt8(1, DefaultContextHeaders.CREATEGAME);
+		df.setInt8(0, ContextTypesHeaders.DefaultContext);
+		df.setInt8(1, DefaultContextHeaders.CreateGameRequest);
 		if (fullprivate)
 			df.setInt8(2, 1);
 		df.setInt8(3, patch);
@@ -103,8 +103,8 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 		let ab = new ArrayBuffer(2);
 		let df = new DataView(ab);
 
-		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
-		df.setInt8(1, DefaultContextHeaders.SENDMESSAGE);
+		df.setInt8(0, ContextTypesHeaders.DefaultContext);
+		df.setInt8(1, DefaultContextHeaders.SendMessageRequest);
 
 		return new Blob([ab, mTo, new ArrayBuffer(1), mFrom, new ArrayBuffer(1), mText, new ArrayBuffer(1)]);
 	}
@@ -149,8 +149,8 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 		let ab = new ArrayBuffer(7);
 		let df = new DataView(ab);
 
-		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
-		df.setInt8(1, DefaultContextHeaders.GETMAPINFO);
+		df.setInt8(0, ContextTypesHeaders.DefaultContext);
+		df.setInt8(1, DefaultContextHeaders.MapInfoRequest);
 		df.setInt32(2, gameid, true);
 
 		return ab;

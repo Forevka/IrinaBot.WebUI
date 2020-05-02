@@ -3,7 +3,7 @@ import ErrorModel from '@/models/responses/ErrorModel';
 import UserAuthModel from '@/models/responses/UserAuthModel';
 import IntegrationByTokenModel from '@/models/responses/IntegrationByTokenModel';
 
-export interface IGlobalContextHelper {
+export default interface IGlobalContextHelper {
     createUserAuth(type: number, token: string, force: number): Blob;
     createInterrationAdd(type: number, token: string): Blob;
     createGetBNETKey(): Blob;

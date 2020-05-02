@@ -28,25 +28,19 @@ class LocalClient implements ILocalClient {
             });
 
             this._afterConnectCallbacks = [];
-            console.log(eventBus.mainApp)
             eventBus.emit("localSocketConnected", {})
-            console.log(eventBus.mainApp)
         };
 
         this._client.onclose = (ev: Event) => {
             this._isConnected = false;
             this._isReconnecting = false;
 
-            console.log('closing')
-            console.log(ev)
             eventBus.emit("localSocketClosed", {})
         }
 
         this._client.onerror = (ev: Event) => {
             this._isConnected = false;
 
-            console.log('error')
-            console.log(ev)
             eventBus.emit("localSocketError", {})
         }
 

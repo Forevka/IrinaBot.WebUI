@@ -21,8 +21,8 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
         let ab = new ArrayBuffer(4);
         let df = new DataView(ab);
 
-        df.setInt8(0, ContextTypesHeaders.GLOBALCONTEXT);
-        df.setInt8(1, GlobalContextHeaders.USERAUTH);
+        df.setInt8(0, ContextTypesHeaders.GlobalContext);
+        df.setInt8(1, GlobalContextHeaders.UserAuthRequest);
         df.setInt8(2, type);
         df.setInt8(3, force);
 
@@ -33,8 +33,8 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
         let ab = new ArrayBuffer(3);
         let df = new DataView(ab);
 
-        df.setInt8(0, ContextTypesHeaders.GLOBALCONTEXT);
-        df.setInt8(1, GlobalContextHeaders.ADDINTEGRATIONBYTOKEN);
+        df.setInt8(0, ContextTypesHeaders.GlobalContext);
+        df.setInt8(1, GlobalContextHeaders.AddIntegrationTokenRequest);
         df.setInt8(2, type);
 
         return new Blob([df, token, new ArrayBuffer(1)]);
@@ -44,8 +44,8 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
         let ab = new ArrayBuffer(2);
         let df = new DataView(ab);
 
-        df.setInt8(0, ContextTypesHeaders.GLOBALCONTEXT);
-        df.setInt8(1, GlobalContextHeaders.GETBNETKEY);
+        df.setInt8(0, ContextTypesHeaders.GlobalContext);
+        df.setInt8(1, GlobalContextHeaders.GetBnetKeyRequest);
 
         return new Blob([df]);
     }
@@ -54,8 +54,8 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
         let ab = new ArrayBuffer(2);
         let df = new DataView(ab);
 
-        df.setInt8(0, ContextTypesHeaders.GLOBALCONTEXT);
-        df.setInt8(1, GlobalContextHeaders.SETCONNECTORNAME);
+        df.setInt8(0, ContextTypesHeaders.GlobalContext);
+        df.setInt8(1, GlobalContextHeaders.SetConnectorNameAnswer);
 
         return new Blob([df, name, new ArrayBuffer(1)]);
     }
@@ -100,8 +100,8 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
         let ab = new ArrayBuffer(3);
         let df = new DataView(ab);
 
-        df.setInt8(0, ContextTypesHeaders.GLOBALCONTEXT);
-        df.setInt8(1, GlobalContextHeaders.DELETEINTEGRATION);
+        df.setInt8(0, ContextTypesHeaders.GlobalContext);
+        df.setInt8(1, GlobalContextHeaders.DeleteIntegrationAnswer);
         df.setInt8(2, type);
 
         return new Blob([df]);

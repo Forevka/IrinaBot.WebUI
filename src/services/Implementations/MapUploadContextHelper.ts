@@ -1,7 +1,7 @@
 import DataBuffer from '@/utilities/DataBuffer';
 import { ContextTypesHeaders } from '@/models/enum/ContextTypesHeaders';
 import { MapUploaderContextHeaders } from '@/models/enum/MapUploadContextHeaders';
-import { IMapUploadContextHelper } from '../Abstractions/IMapUploadContextHelper';
+import IMapUploadContextHelper from '../Abstractions/IMapUploadContextHelper';
 
 export default class MapUploadContextHelper implements IMapUploadContextHelper {
 
@@ -10,11 +10,11 @@ export default class MapUploadContextHelper implements IMapUploadContextHelper {
     }
 
 
-    public parseMapSaved = function (data: DataBuffer) {
+    public parseMapSaved(data: DataBuffer): string {
         return data.getNullTerminatedString();
     }
 
-    public createContextRequest(MapSize: number, MapName: string) {
+    public createContextRequest(MapSize: number, MapName: string): Blob {
         let ab = new ArrayBuffer(7);
         let df = new DataView(ab);
 
@@ -29,7 +29,7 @@ export default class MapUploadContextHelper implements IMapUploadContextHelper {
     }
 
 
-    public createMapPart(mapPart: Blob) {
+    public createMapPart(mapPart: Blob): Blob {
         let ab = new ArrayBuffer(2);
         let df = new DataView(ab);
 
@@ -39,7 +39,7 @@ export default class MapUploadContextHelper implements IMapUploadContextHelper {
         return new Blob([df, mapPart]);
     }
 
-    public createMapSave() {
+    public createMapSave(): ArrayBuffer {
         let ab = new ArrayBuffer(2);
         let df = new DataView(ab);
 

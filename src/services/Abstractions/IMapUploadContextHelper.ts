@@ -1,8 +1,10 @@
 import DataBuffer from '@/utilities/DataBuffer';
 
-export interface IMapUploadContextHelper {
+export default interface IMapUploadContextHelper {
     parseMapPartOK(data: DataBuffer): number;
-    createContextRequest(MapSize: number, MapName: string): {};
-    createMapPart(mapPart: Blob): {};
-    createMapSave(): {};
+    parseMapSaved(data: DataBuffer): string;
+
+    createContextRequest(MapSize: number, MapName: string): Blob;
+    createMapPart(mapPart: Blob): Blob;
+    createMapSave(): ArrayBuffer;
 }

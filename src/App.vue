@@ -20,6 +20,10 @@ import { IApiClient } from './services/Abstractions/IApiClient';
 import DefaultContextHelper from './services/Implementations/DefaultContextHelper';
 import NavBarComponent from "@/components/NavBarComponent.vue";
 import ILocalClient from './services/Abstractions/ILocalClient';
+import { GlobalContextHeaders } from './models/enum/GlobalContextHeaders';
+
+import IGlobalContextHelper from '@/services/Abstractions/IGlobalContextHelper';
+import GlobalContextHelper from "@/services/Implementations/GlobalContextHelper";
 
 @Component({
   components: {
@@ -35,6 +39,8 @@ export default class App extends Vue {
 
   private pingInterval: number = 3;
 
+  private globalHelper: IGlobalContextHelper = new GlobalContextHelper();
+
   constructor() {
     super();
   }
@@ -43,7 +49,9 @@ export default class App extends Vue {
     this.client = client;
     this.localClient = localClient;
     this.eventBus = eventBus;
-    this.client.addDefaultHandler(this.onDefaultContextWelcome, DefaultContextHeaders.CONTEXTWELCOME)
+    this.client.addDefaultHandler(this.onDefaultContextWelcome, DefaultContextHeaders.WelcomeAnswer)
+    
+    this.client.addGlobalHandler(this.onGlobalError, GlobalContextHeaders.GetErrorAnswer)
 
     this.client.afterConnect(() => {
       console.log("AFTER CONNECT")
@@ -61,6 +69,19 @@ export default class App extends Vue {
     this.$on('localSocketConnected', this.localSocketConnected)
 
     this.localClient.reconect();
+  }
+
+  onGlobalError(message: DataBuffer) {
+    let error = this.globalHelper.parseError(message);
+    console.warn(error)
+    if (error.code === 1)
+    {
+      if (error.description.startsWith('Карта уже имеется на боте.'))
+      {
+        console.warn('Карта уже имеется на боте.')
+        this.$root.$emit('mapAlreadyExist', error);
+      }
+    }
   }
 
   localSocketConnected() {

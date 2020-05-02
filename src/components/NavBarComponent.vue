@@ -12,7 +12,15 @@
         <template slot="end">
             <b-navbar-item tag="div">
                 <div class="buttons">
-                    <a class="button is-light" @click="login()">
+                    <a class="button is-info" icon="home" @click="openUploadMap()">
+                        <font-awesome-icon icon="upload" style="margin-right: 5px;"/>
+                        Загрузить карту
+                    </a>
+                </div>
+            </b-navbar-item>
+            <b-navbar-item tag="div">
+                <div class="buttons">
+                    <a class="button is-primary" @click="login()">
                         Log in
                     </a>
                 </div>
@@ -25,7 +33,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Game, Player } from '../models/responses/GameModel';
 import {playerColors} from "@/utilities/PlayerColors";
-//import DiscordOauth2 from 'discord-oauth2';
+import MapUploadComponent from './MapUploadComponent.vue';
 
 @Component({
   components: {
@@ -40,7 +48,18 @@ export default class NavBarComponent extends Vue {
 
     login() {
         console.log('login')
-        window.open('https://discordapp.com/oauth2/authorize?client_id=517423360091881484&redirect_uri=https%3A%2F%2Firinabo.ru%2Fdiscord%2F&response_type=token&scope=identify%20guilds.join')
+        window.open('')
+    }
+
+    openUploadMap() {
+        this.$buefy.modal.open({
+            canCancel: ['outside'],
+            parent: this,
+            component: MapUploadComponent,
+            hasModalCard: true,
+            customClass: 'custom-class custom-class-2',
+            trapFocus: true
+        })
     }
 }
 </script>
