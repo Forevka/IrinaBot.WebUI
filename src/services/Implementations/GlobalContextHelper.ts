@@ -9,7 +9,7 @@ import { IGlobalContextHelper } from '../Abstractions/IGlobalContextHelper';
 export default class GlobalContextHelper implements IGlobalContextHelper {
 
     public parseError(data: DataBuffer): ErrorModel {
-        var resp: ErrorModel = new ErrorModel();
+        let resp: ErrorModel = new ErrorModel();
 
         resp.code = data.getInt8();
         resp.description = data.getNullTerminatedString();
@@ -18,8 +18,9 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
     }
 
     public createUserAuth(type: number, token: string, force: number): Blob {
-        var ab = new ArrayBuffer(4);
-        var df = new DataView(ab);
+        let ab = new ArrayBuffer(4);
+        let df = new DataView(ab);
+
         df.setInt8(0, ContextTypesHeaders.GLOBALCONTEXT);
         df.setInt8(1, GlobalContextHeaders.USERAUTH);
         df.setInt8(2, type);
@@ -29,8 +30,9 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
     }
 
     public createInterrationAdd(type: number, token: string): Blob {
-        var ab = new ArrayBuffer(3);
-        var df = new DataView(ab);
+        let ab = new ArrayBuffer(3);
+        let df = new DataView(ab);
+
         df.setInt8(0, ContextTypesHeaders.GLOBALCONTEXT);
         df.setInt8(1, GlobalContextHeaders.ADDINTEGRATIONBYTOKEN);
         df.setInt8(2, type);
@@ -39,8 +41,9 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
     }
 
     public createGetBNETKey(): Blob {
-        var ab = new ArrayBuffer(2);
-        var df = new DataView(ab);
+        let ab = new ArrayBuffer(2);
+        let df = new DataView(ab);
+
         df.setInt8(0, ContextTypesHeaders.GLOBALCONTEXT);
         df.setInt8(1, GlobalContextHeaders.GETBNETKEY);
 
@@ -48,8 +51,9 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
     }
 
     public createSetConnectorName(name: string): Blob {
-        var ab = new ArrayBuffer(2);
-        var df = new DataView(ab);
+        let ab = new ArrayBuffer(2);
+        let df = new DataView(ab);
+
         df.setInt8(0, ContextTypesHeaders.GLOBALCONTEXT);
         df.setInt8(1, GlobalContextHeaders.SETCONNECTORNAME);
 
@@ -57,7 +61,7 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
     }
 
     public parseUserAuthResponse(data: DataBuffer): UserAuthModel {
-        var response: UserAuthModel = new UserAuthModel();
+        let response: UserAuthModel = new UserAuthModel();
 
         response.id = data.getNullTerminatedString();
         response.nickname = data.getNullTerminatedString();
@@ -79,7 +83,7 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
     }
 
     public parseIntegrationByToken(data: DataBuffer): IntegrationByTokenModel {
-        var response: IntegrationByTokenModel = new IntegrationByTokenModel()
+        let response: IntegrationByTokenModel = new IntegrationByTokenModel()
 
         response.localId = data.getInt32();
         response.discordId = data.getNullTerminatedString();
@@ -93,8 +97,9 @@ export default class GlobalContextHelper implements IGlobalContextHelper {
     }
 
     public createDeleteIntegration(type: number): Blob {
-        var ab = new ArrayBuffer(3);
-        var df = new DataView(ab);
+        let ab = new ArrayBuffer(3);
+        let df = new DataView(ab);
+
         df.setInt8(0, ContextTypesHeaders.GLOBALCONTEXT);
         df.setInt8(1, GlobalContextHeaders.DELETEINTEGRATION);
         df.setInt8(2, type);

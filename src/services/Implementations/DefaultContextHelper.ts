@@ -10,8 +10,8 @@ import { IDefaultContextHelper } from '../Abstractions/IDefaultContextHelper';
 export default class DefaultContextHelper implements IDefaultContextHelper {
 
 	public parseGameList(data: DataBuffer): Game[] {
-		var gamescount = data.getUint16();
-		var games: Game[] = [];
+		let gamescount = data.getUint16();
+		let games: Game[] = [];
 
 		while (games.length < gamescount) {
 			let game = this.parseGame(data);
@@ -25,8 +25,9 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 
 
 	public createContextRequest(): ArrayBuffer {
-		var ab = new ArrayBuffer(3);
-		var df = new DataView(ab);
+		let ab = new ArrayBuffer(3);
+		let df = new DataView(ab);
+
 		df.setInt8(0, 0); // GLOBAL CONTEXT
 		df.setInt8(1, 1); // CONTEXT REQ
 		df.setInt8(2, ContextTypesHeaders.DEFAULTCONTEXT);
@@ -35,8 +36,9 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 	}
 
 	public createGetGameList(): ArrayBuffer {
-		var ab = new ArrayBuffer(2);
-		var df = new DataView(ab);
+		let ab = new ArrayBuffer(2);
+		let df = new DataView(ab);
+
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
 		df.setInt8(1, DefaultContextHeaders.GETGAMELIST);
 
@@ -44,8 +46,9 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 	}
 
 	public createGetGameUDP(isPrivateKey: number, gameid: number, gamepassword: string): Blob {
-		var ab = new ArrayBuffer(7);
-		var df = new DataView(ab);
+		let ab = new ArrayBuffer(7);
+		let df = new DataView(ab);
+
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
 		df.setInt8(1, DefaultContextHeaders.GETUDPGAE);
 		df.setInt8(2, isPrivateKey);
@@ -55,8 +58,9 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 	}
 
 	public createGameSignal(gameid: number, signal: string): Blob {
-		var ab = new ArrayBuffer(6);
-		var df = new DataView(ab);
+		let ab = new ArrayBuffer(6);
+		let df = new DataView(ab);
+		
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
 		df.setInt8(1, DefaultContextHeaders.SENDGAMEEXTERNALSIGNAL);
 		df.setInt32(2, gameid, true);
@@ -142,8 +146,8 @@ export default class DefaultContextHelper implements IDefaultContextHelper {
 
 
 	public createGetMapInfo(gameid: number): ArrayBuffer {
-		var ab = new ArrayBuffer(7);
-		var df = new DataView(ab);
+		let ab = new ArrayBuffer(7);
+		let df = new DataView(ab);
 
 		df.setInt8(0, ContextTypesHeaders.DEFAULTCONTEXT);
 		df.setInt8(1, DefaultContextHeaders.GETMAPINFO);
