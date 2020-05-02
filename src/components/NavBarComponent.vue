@@ -53,7 +53,7 @@ export default class NavBarComponent extends Vue {
 
     openUploadMap() {
         this.$buefy.modal.open({
-            canCancel: ['outside'],
+            canCancel: [''],
             parent: this,
             component: MapUploadComponent,
             hasModalCard: true,
