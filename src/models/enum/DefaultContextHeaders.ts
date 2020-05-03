@@ -4,7 +4,7 @@ export enum DefaultContextHeaders {
     WelcomeAnswer = 0x00,
     GameListAnswer = 0x01,
     UdpAnswer = 0x03,
-    CreateGameResponseAnswer = 0x04,
+    CreateGameAnswer = 0x04,
     WebsocketConnectAnswer = 0x05,
     NewMessageAnswer = 0x0C,
     MapInfoAnswer = 0x0D,

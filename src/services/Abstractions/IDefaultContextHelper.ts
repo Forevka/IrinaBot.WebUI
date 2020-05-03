@@ -10,7 +10,7 @@ export interface IDefaultContextHelper {
     createGetGameUDP(isPrivateKey: number, gameid: number, gamepassword: string): Blob;
     createGameSignal(gameid: number, signal: string): Blob;
     createWsConnect(): ArrayBuffer;
-    createCreateGame(fullprivate: boolean, map: string, gamename: string, owner: string, patch: number, flags: number): Blob;
+    createCreateGame(isPrivate: boolean, map: string, gamename: string, owner: string, patch: number, flags: number): Blob;
     createMessage(mFrom: string, mTo: string, mText: string): Blob;
     createGetMapInfo(gameid: number): ArrayBuffer;
 

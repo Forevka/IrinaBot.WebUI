@@ -3,8 +3,11 @@ import { AxiosResponse, AxiosInstance, AxiosRequestConfig } from 'axios';
 import {GlobalContextHeaders} from "@/models/enum/GlobalContextHeaders";
 import {DefaultContextHeaders} from "@/models/enum/DefaultContextHeaders";
 import { MapUploaderContextHeaders } from '@/models/enum/MapUploadContextHeaders';
+import UserAuthModel from '@/models/responses/UserAuthModel';
 
 export interface IApiClient {
+    userObj: UserAuthModel;
+
     //updateToken(): Promise<void>;
     sendMessage(msg: ArrayBuffer | Blob): void;
     addDefaultHandler(callback: Function, header: DefaultContextHeaders): void;
@@ -16,4 +19,8 @@ export interface IApiClient {
     removeMapUploadHandler(callback: Function, header: MapUploaderContextHeaders): void;
     
     afterConnect(callback: Function): void;
+
+    isLogged(): boolean;
+    auth(user: UserAuthModel): void;
+    user(): UserAuthModel;
 }

@@ -6,12 +6,15 @@ import { ContextTypesHeaders } from "@/models/enum/ContextTypesHeaders";
 import { GlobalContextHeaders } from "@/models/enum/GlobalContextHeaders";
 import { DefaultContextHeaders } from "@/models/enum/DefaultContextHeaders";
 import { MapUploaderContextHeaders } from '@/models/enum/MapUploadContextHeaders';
+import UserAuthModel from '@/models/responses/UserAuthModel';
 
 class ApiClient implements IApiClient {
     private _client: WebSocket;
     private _websocketUrl: string = "wss://irinabot.ru/ghost/"
 
     private _isConnected: boolean = false;
+    private _isLogged: boolean = false;
+    public userObj: UserAuthModel;
 
     private _handlersDict: Dictionary<Dictionary<Array<Function>>> = {};
 
@@ -49,6 +52,15 @@ class ApiClient implements IApiClient {
         this._handlersDict[ContextTypesHeaders.DefaultContext] = this._handlerDefaultContextList;
         this._handlersDict[ContextTypesHeaders.GlobalContext] = this._handlerGlobalContextList;
         this._handlersDict[ContextTypesHeaders.MapUpload] = this._handlerMapUploadContextList;
+    }
+
+    public auth(user: UserAuthModel): void {
+        this.userObj = user;
+        this._isLogged = true;
+    }
+
+    public isLogged(): boolean {
+        return this._isLogged;
     }
 
     public afterConnect(callback: Function): void {
@@ -124,6 +136,10 @@ class ApiClient implements IApiClient {
         //console.log(msg)
         if (this._isConnected)
             this._client.send(msg);
+    }
+
+    public user(): UserAuthModel {
+        return this.userObj;
     }
 }
 

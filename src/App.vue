@@ -25,6 +25,8 @@ import { GlobalContextHeaders } from './models/enum/GlobalContextHeaders';
 import IGlobalContextHelper from '@/services/Abstractions/IGlobalContextHelper';
 import GlobalContextHelper from "@/services/Implementations/GlobalContextHelper";
 import MapLoader from './services/Implementations/MapLoader';
+import { IDefaultContextHelper } from './services/Abstractions/IDefaultContextHelper';
+import HostedGameComponent from './components/HostedGameComponent.vue';
 
 @Component({
   components: {
@@ -41,6 +43,7 @@ export default class App extends Vue {
   private pingInterval: number = 3;
 
   private globalHelper: IGlobalContextHelper = new GlobalContextHelper();
+  private defaultHelper: IDefaultContextHelper = new DefaultContextHelper();
 
   constructor() {
     super();
@@ -59,11 +62,15 @@ export default class App extends Vue {
     this.localClient = localClient;
     this.eventBus = eventBus;
     this.client.addDefaultHandler(this.onDefaultContextWelcome, DefaultContextHeaders.WelcomeAnswer)
+    this.client.addDefaultHandler(this.onCreateGameAnswer, DefaultContextHeaders.CreateGameAnswer)
     
     this.client.addGlobalHandler(this.onGlobalError, GlobalContextHeaders.GetErrorAnswer)
+    this.client.addGlobalHandler(this.onUserAuth, GlobalContextHeaders.UserAuthAnswer)
 
     this.client.afterConnect(() => {
       console.log("AFTER CONNECT")
+
+      this.authorize();
 
       setInterval(()=> {
         this.sendPing() 
@@ -80,6 +87,51 @@ export default class App extends Vue {
     this.localClient.reconect();
   }
 
+  onUserAuth(message: DataBuffer) {
+    let user = this.globalHelper.parseUserAuthResponse(message);
+    this.client.auth(user);
+
+    this.$awn.success(`<span style="display: flex;"> <img src=${user.avatarUrl} style="width: 64px;margin-right: 10px;"> Authorized as ${user.nickname}</span>`, {
+      labels: {
+        success: ''
+      },
+    })
+  }
+
+  onCreateGameAnswer(message: DataBuffer) {
+    let game = this.defaultHelper.parseCreateGameResponse(message)
+    console.log(game)
+    if(game.code === 11)
+    {
+      this.$awn.alert(game.description, {})
+      return;
+    }
+    
+    if (game.password !== '')
+    {
+      this.$buefy.modal.open({
+        canCancel: [''],
+        parent: this,
+        component: HostedGameComponent,
+        hasModalCard: true,
+        customClass: 'hosted-game-wrapper',
+        trapFocus: true,
+        props: {
+          game
+        }
+      })
+      return;
+    }
+  }
+
+  authorize() {
+    let accessTokenDiscord = localStorage.getItem('accessToken_Discord')
+
+    if (accessTokenDiscord !== undefined && accessTokenDiscord !== null && accessTokenDiscord !== '') {
+      this.client.sendMessage(this.globalHelper.createUserAuth(1, accessTokenDiscord, 0))
+    }
+  }
+
   onGlobalError(message: DataBuffer) {
     let error = this.globalHelper.parseError(message);
     console.warn(error)
@@ -88,8 +140,11 @@ export default class App extends Vue {
       if (error.description.startsWith('Карта уже имеется на боте.'))
       {
         this.$root.$emit('mapAlreadyExist', error);
+        return;
       }
     }
+
+    this.$awn.warning(`${error.code} - ${error.description}`, {})
   }
 
   localSocketConnected() {
@@ -139,6 +194,13 @@ img {
 
 html {  
   background-color: rgba(50, 115, 220, 0.3) !important;
+}
+.animation-content {
+  min-width: 50%;
+}
+
+small.help.counter.is-invisible {
+  display: none !important;
 }
 </style>
 

@@ -39,10 +39,13 @@ library.add({faUpload, faCheck, faTimes, faAngleDoubleUp, faAngleDoubleDown, faU
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
+import { i18n } from './I18n/languages';
+
 Vue.config.productionTip = false
 
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App),
 }).$mount('#app')
