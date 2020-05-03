@@ -24,6 +24,7 @@ import { GlobalContextHeaders } from './models/enum/GlobalContextHeaders';
 
 import IGlobalContextHelper from '@/services/Abstractions/IGlobalContextHelper';
 import GlobalContextHelper from "@/services/Implementations/GlobalContextHelper";
+import MapLoader from './services/Implementations/MapLoader';
 
 @Component({
   components: {
@@ -43,6 +44,14 @@ export default class App extends Vue {
 
   constructor() {
     super();
+  }
+
+  async created() {
+    /*let mapLoader = new MapLoader();
+    console.time('mapParsing')
+    await mapLoader.updateMaps()
+    console.timeEnd('mapParsing')
+    console.log(mapLoader.mapList)*/
   }
 
   mounted() {
@@ -78,7 +87,6 @@ export default class App extends Vue {
     {
       if (error.description.startsWith('Карта уже имеется на боте.'))
       {
-        console.warn('Карта уже имеется на боте.')
         this.$root.$emit('mapAlreadyExist', error);
       }
     }
