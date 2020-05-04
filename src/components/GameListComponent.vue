@@ -43,7 +43,7 @@
             default-sort-direction="desc"
             :loading="gameList.length === 0">
             <template slot-scope="props">
-                <b-table-column width="30%" field="name" label="Имя игры" sortable>
+                <b-table-column width="40%" field="name" label="Имя игры" sortable>
                     <b-input
                     slot="subheading"
                     placeholder="Поиск..."
@@ -53,20 +53,19 @@
                     {{ props.row.name }}
                 </b-table-column>
 
-                <b-table-column width="60%" field="formattedPlayers" label="Игроки" sortable>
+                <b-table-column width="50%" field="formattedPlayers" label="Игроки" sortable v-html="props.row.formattedPlayers">
                     <b-input
                     slot="subheading"
                     placeholder="Поиск..."
                     v-model="playerNameValue"
                     icon="magnify"
                     size="is-small" />
-                    {{ props.row.formattedPlayers }} 
                 </b-table-column>
 
                 <b-table-column width="3%" field="realPlayersCount" label="Игроков" sortable centered>
                     {{ props.row.realPlayersCount }}
                 </b-table-column>
-                <b-table-column width="3%" field="players.length" label="Макс.Игроков" sortable centered>
+                <b-table-column width="2%" field="players.length" label="Макс.Игроков" sortable centered>
                     {{ props.row.players.length }}
                 </b-table-column>
 
@@ -138,7 +137,7 @@ export default class GameListComponent extends Vue {
         super();
         this.loadSettings()
     }
-    
+
     storeSettings() {
         let key: string = `gameListComponent_${this.tableType}`
 

@@ -225,7 +225,12 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
+@import "~bulma/sass/utilities/_all";
 @import "~vue-awesome-notifications/dist/styles/style.css";
+
+tbody tr:hover:not(.is-selected):not(.is-empty) {
+  background-color: turquoise !important;
+}
 
 img {
   width: 100%;
@@ -241,6 +246,10 @@ html {
 
 small.help.counter.is-invisible {
   display: none !important;
+}
+
+.player-name {
+  padding-left: 5px;
 }
 </style>
 

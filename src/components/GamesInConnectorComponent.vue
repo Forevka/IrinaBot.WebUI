@@ -120,8 +120,8 @@ export default class GamesInConnectorComponent extends Vue {
 
     deleteGame(localGameId: number): ArrayBuffer
     {
-        var send = new ArrayBuffer(9);
-        var df = new DataView(send);
+        let send = new ArrayBuffer(9);
+        let df = new DataView(send);
         df.setInt8(0, 1);
         df.setInt8(1, 247);
         df.setInt8(2, 51);
