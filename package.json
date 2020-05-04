@@ -16,6 +16,7 @@
     "@types/nprogress": "^0.2.0",
     "axios": "^0.19.0",
     "buefy": "^0.8.17",
+    "bulmaswatch": "^0.8.1",
     "core-js": "^3.4.3",
     "filepond": "^4.11.0",
     "filepond-plugin-file-validate-type": "^1.2.4",

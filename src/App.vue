@@ -26,6 +26,7 @@ import GlobalContextHelper from "@/services/Implementations/GlobalContextHelper"
 import MapLoader from "./services/Implementations/MapLoader";
 import { IDefaultContextHelper } from "./services/Abstractions/IDefaultContextHelper";
 import HostedGameComponent from "./components/HostedGameComponent.vue";
+import themeHelper from "@/services/Implementations/ThemeHelper.ts";
 
 @Component({
   components: {
@@ -44,16 +45,40 @@ export default class App extends Vue {
   private globalHelper: IGlobalContextHelper = new GlobalContextHelper();
   private defaultHelper: IDefaultContextHelper = new DefaultContextHelper();
 
+  
+  private themeHelper = themeHelper;
+
+  public themes = {
+    default: "https://httpstat.us/200",
+    darkly: "https://cdn.rawgit.com/jenil/bulmaswatch/gh-pages/darkly/bulmaswatch.min.css",
+    flatly: "https://cdn.rawgit.com/jenil/bulmaswatch/gh-pages/flatly/bulmaswatch.min.css",
+    lux: "https://cdn.rawgit.com/jenil/bulmaswatch/gh-pages/lux/bulmaswatch.min.css",
+    sandstone: "https://cdn.rawgit.com/jenil/bulmaswatch/gh-pages/sandstone/bulmaswatch.min.css",
+    solar: "https://cdn.rawgit.com/jenil/bulmaswatch/gh-pages/solar/bulmaswatch.min.css",
+    slate: "https://cdn.rawgit.com/jenil/bulmaswatch/gh-pages/slate/bulmaswatch.min.css",
+    superhero: "https://cdn.rawgit.com/jenil/bulmaswatch/gh-pages/superhero/bulmaswatch.min.css",
+    united: "https://cdn.rawgit.com/jenil/bulmaswatch/gh-pages/united/bulmaswatch.min.css",
+    materia: "https://cdn.rawgit.com/jenil/bulmaswatch/gh-pages/materia/bulmaswatch.min.css",
+    journal: "https://cdn.rawgit.com/jenil/bulmaswatch/gh-pages/journal/bulmaswatch.min.css",
+  }
+
   constructor() {
     super();
   }
 
   async created() {
-    /*let mapLoader = new MapLoader();
-    console.time('mapParsing')
-    await mapLoader.updateMaps()
-    console.timeEnd('mapParsing')
-    console.log(mapLoader.mapList)*/
+    this.themeHelper = themeHelper;
+
+    let added = Object.keys(this.themes).map(name => {
+      return this.themeHelper.add(name, this.themes[name]);
+    });
+
+    console.log(this.themeHelper)
+
+    Promise.all(added).then(sheets => {
+      console.log(`${sheets.length} themes loaded`);
+      this.themeHelper.theme = 'default'
+    })
   }
 
   mounted() {
@@ -225,11 +250,22 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
-@import "~bulma/sass/utilities/_all";
 @import "~vue-awesome-notifications/dist/styles/style.css";
+
+// Bulma + Bulmaswatch
+//@import "themes/darkly/variables";
+@import "node_modules/bulma/bulma";
+//@import "themes/darkly/overrides";
+
+// Buefy
+@import "node_modules/buefy/src/scss/buefy";
 
 tbody tr:hover:not(.is-selected):not(.is-empty) {
   background-color: turquoise !important;
+}
+
+.table td {
+  border: none;
 }
 
 img {
@@ -237,9 +273,9 @@ img {
   height: 100%;
 }
 
-html {
+/*html {
   background-color: rgba(50, 115, 220, 0.3) !important;
-}
+}*/
 .animation-content {
   min-width: 50%;
 }
@@ -262,7 +298,6 @@ html {
   font-weight: 400;
   color: #3b3b3b;
   -webkit-font-smoothing: antialiased;
-  background: #2b2b2b;
   font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     "Helvetica", "Arial", sans-serif;
@@ -280,15 +315,35 @@ html {
 </style>
 
 <style lang="scss">
-.table.is-narrow td,
-.table.is-narrow th {
-  padding: 0.1em 0.5em;
-  padding-bottom: 0 !important;
+.navbar {
+  background-color: #1f2424;
+  border-radius: 0 !important;
+}
+
+.navbar-item.has-dropdown:focus .navbar-link, .navbar-item.has-dropdown:hover .navbar-link, .navbar-item.has-dropdown.is-active .navbar-link {
+  background-color: #776374;
+}
+
+a.navbar-item:focus, a.navbar-item:focus-within, a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:focus, .navbar-link:focus-within, .navbar-link:hover, .navbar-link.is-active {
+  color: #FFC070;
+}
+
+.navbar-dropdown {
+  background-color: #1f2424;
+}
+
+.navbar-item {
+  color: white;
+}
+
+.navbar-link {
+  color: white;
 }
 
 .table.is-narrow td,
 .table.is-narrow th {
-  padding: 0em 0.5em !important;
+  //padding: 0;
+  padding-bottom: 0 !important;
 }
 
 div.control {

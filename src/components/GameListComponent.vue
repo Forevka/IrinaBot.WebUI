@@ -26,7 +26,7 @@
             <b-checkbox v-model="dontShowFullGame">Не показывать фулл-пати</b-checkbox>
         </b-field>
         <b-table v-if="isOpen"
-            v-on:select="clicked"
+            v-on:click="clicked"
             :paginated="true"
             :pagination-simple="false"
             :pagination-position="'bottom'"
@@ -43,7 +43,7 @@
             default-sort-direction="desc"
             :loading="gameList.length === 0">
             <template slot-scope="props">
-                <b-table-column width="40%" field="name" label="Имя игры" sortable>
+                <b-table-column width="40%" field="name" label="Имя игры" sortable style="font-weight: 600;">
                     <b-input
                     slot="subheading"
                     placeholder="Поиск..."
@@ -59,7 +59,8 @@
                 label="Игроки" 
                 sortable 
                 v-html="props.row.formattedPlayers" 
-                style="">
+                style="display: grid;grid-template-columns: repeat(6, 0.1fr);"
+                cell-class="player-name-list">
                     <b-input
                     slot="subheading"
                     placeholder="Поиск..."
@@ -68,10 +69,20 @@
                     size="is-small" />
                 </b-table-column>
 
-                <b-table-column width="3%" field="realPlayersCount" label="Игроков" sortable centered>
+                <b-table-column  width="3%" field="realPlayersCount" label="Игроков в игре" sortable centered>
+                    <template slot="header" slot-scope="{ column }">
+                        <b-tooltip :label="column.label" dashed>
+                            И.
+                        </b-tooltip>
+                    </template> 
                     {{ props.row.realPlayersCount }}
                 </b-table-column>
-                <b-table-column width="2%" field="players.length" label="Макс.Игроков" sortable centered>
+                <b-table-column width="2%" field="players.length" label="Максимум игроков" sortable centered>
+                    <template slot="header" slot-scope="{ column }">
+                        <b-tooltip :label="column.label" dashed>
+                            М.И
+                        </b-tooltip>
+                    </template> 
                     {{ props.row.players.length }}
                 </b-table-column>
 
@@ -189,6 +200,7 @@ export default class GameListComponent extends Vue {
     }
 
     clicked(row: Game) {
+        console.log(row)
         if (row.gameCounter != this.selected.gameCounter)
         {   
             console.log("sending")

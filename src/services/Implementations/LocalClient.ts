@@ -94,7 +94,6 @@ class LocalClient implements ILocalClient {
     }
 
     public onLocalGameList(me: ILocalClient, message: DataBuffer): void {
-        console.log(me)
         // @ts-ignore
         me._localGames = new LocalGameList();
         // @ts-ignore
@@ -115,9 +114,6 @@ class LocalClient implements ILocalClient {
             // @ts-ignore
             me._localGames.gameList.push(game);
         }
-
-        // @ts-ignore
-        console.log(me._localGames);
     }
 
     localGames(): LocalGameList {
@@ -128,7 +124,6 @@ class LocalClient implements ILocalClient {
         if (this._handlerList[header] === undefined)
             this._handlerList[header] = []
         this._handlerList[header].push(callback)
-        console.log(this._handlerList[header])
     }
 
     public removeHandler(callback: Function, header: number): void {

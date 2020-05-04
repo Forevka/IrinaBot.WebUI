@@ -20,15 +20,17 @@ export class Game {
 
     public calcPlayers(): void {
         this.realPlayersCount = 0;
-        this.formattedPlayers = "";
+        this.formattedPlayers = '<div class="list-of-players-name" style="min-height: 4.1vh;display: grid;grid-template-columns: repeat(6, 0.1fr);">';
 
         this.players.forEach(player => {
             if (player.name != "")
             {
                 this.realPlayersCount += 1;
-                this.formattedPlayers += `<span class="player-name" style="color: ${this.playerColors[player.color]};text-shadow: 0 0 1px black;">` + player.name + "</span>";
+                this.formattedPlayers += `<div class="player-name" style="color: ${this.playerColors[player.color]};text-shadow: 0 0 1px black;white-space: nowrap;">` + player.name + "</div>";
             }
         });
+
+        this.formattedPlayers += '</div>'
     }
 }
 

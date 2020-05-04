@@ -12,7 +12,7 @@ import VueAWN from "vue-awesome-notifications"
 import 'nprogress/nprogress.css';
 
 import Buefy from 'buefy'
-import 'buefy/dist/buefy.css'
+//import 'buefy/dist/buefy.css'
 
 import setup from './utilities/math_round_extensions.js'
 setup()
@@ -20,6 +20,9 @@ setup()
 import { VueNotification } from '@/types/AwnTypes';
 
 Vue.use(Buefy)
+
+//import 'bulmaswatch/darkly/_variables.scss'
+//import 'bulmaswatch/darkly/_overrides.scss'
 
 // require styles
 import moment from 'moment'

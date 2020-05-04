@@ -96,10 +96,12 @@ export default class GameMapPreviewComponent extends Vue {
 
 .game-map-description {
     word-break: break-word;
+    text-shadow: 0 0 1px black;
 }
 
 .game-map-name {
     text-align: center;
+    text-shadow: 0 0 1px black;
 }
 .game-map-players {
     text-align: center;

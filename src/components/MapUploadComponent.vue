@@ -10,7 +10,8 @@
                         <b-upload v-model="dropFile" 
                             drag-drop
                             v-on:input="newFile"
-                            :loading="isLoadingMap">
+                            :loading="isLoadingMap"
+                            style="left: 50%;transform: translate(-50%, 0%);">
                             <section class="section">
                                 <div class="content has-text-centered">
                                     <p>
