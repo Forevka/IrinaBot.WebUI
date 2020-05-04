@@ -71,7 +71,7 @@
                 </b-table-column>
 
                 <b-table-column width="5%" field="play" centered>
-                    <b-button icon-left="gamepad" type="is-success" :disabled="!localClient.isConnected()"> 
+                    <b-button icon-left="gamepad" type="is-success" :disabled="!localClient.isConnected()" @click="sendToLocal(props.row)"> 
                         Play!
                     </b-button>
                 </b-table-column>
@@ -108,6 +108,7 @@ import GameMapPreviewModel from '../models/responses/GameMapPreviewModel';
 import GameMapPreviewComponent from '@/components/GameMapPreviewComponent.vue';
 import ILocalClient from '../services/Abstractions/ILocalClient';
 import localClient from '@/services/Implementations/LocalClient';
+import { IDefaultContextHelper } from '../services/Abstractions/IDefaultContextHelper';
 
 @Component({
   components: {
@@ -123,6 +124,8 @@ export default class GameListComponent extends Vue {
     private playerNameValue: string = "";
 
     private localClient: ILocalClient;
+    private client: IApiClient;
+    private defaultHelper: IDefaultContextHelper = new DefaultContextHelper();
 
     @Prop() gameList!: Game[];
     @Prop() tableType!: number;
@@ -154,6 +157,8 @@ export default class GameListComponent extends Vue {
 
     created() {
         this.localClient = localClient;
+        this.client = client;
+
         this.isOpen = this.showByDefault;
     }
 
@@ -188,8 +193,8 @@ export default class GameListComponent extends Vue {
         }
     }
 
-    sendToLocal(row) {
-
+    sendToLocal(row: Game) {
+        this.client.sendMessage(this.defaultHelper.createGetGameUDP(0, row.gameCounter, ''))
     }
 
     getTableColor() {

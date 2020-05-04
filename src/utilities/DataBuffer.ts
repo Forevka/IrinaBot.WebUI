@@ -1,5 +1,5 @@
 export default class DataBuffer {
-    private length: number;
+    public length: number;
     private data: DataView;
     private offset: number;
     private isLittleIndian: boolean;

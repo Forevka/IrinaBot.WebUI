@@ -2,10 +2,13 @@ import DataBuffer from '@/utilities/DataBuffer';
 import { Dictionary } from 'vue-router/types/router';
 import ILocalClient from '../Abstractions/ILocalClient';
 import eventBus from "@/utilities/EventBus";
+import LocalGameModel, { LocalGameList } from '@/models/responses/LocalGameModel';
 
 class LocalClient implements ILocalClient {
     private _client: WebSocket;
     private _websocketUrl: string = "ws://127.0.0.1:8148"
+
+    public localGames: LocalGameList;
 
     private _isConnected: boolean = false;
     public _isReconnecting: boolean = false;
@@ -17,12 +20,12 @@ class LocalClient implements ILocalClient {
     public reconect(): void {
         this._isReconnecting = true;
         this._client = new WebSocket(this._websocketUrl)
-        
+
 
         this._client.onopen = () => {
             this._isConnected = true;
             this._isReconnecting = false;
-            
+
             this._afterConnectCallbacks.forEach(callback => {
                 callback();
             });
@@ -79,22 +82,50 @@ class LocalClient implements ILocalClient {
             //console.log(this._handlersDict)
 
             let handlerList = this._handlerList[header];
-            if (handlerList === undefined)
-            {
-                console.warn("For header "+header+" doe`snt exist any handler")
-                return;   
+            if (handlerList === undefined) {
+                console.warn("For header " + header + " doe`snt exist any handler")
+                return;
             }
 
-            handlerList.forEach(handler => {
-                handler(dataBuffer);
+            handlerList.forEach((handler) => {
+                console.log(this.localGames)
+                handler(this, dataBuffer);
             })
         })
+    }
+
+    public onLocalGameList(me: ILocalClient, message: DataBuffer): void {
+        console.log(me)
+        // @ts-ignore
+        me.localGames = new LocalGameList();
+        // @ts-ignore
+        me.localGames.localConnects = message.getUint16();
+        // @ts-ignore
+        me.localGames.gameCount = message.getUint16();
+        // @ts-ignore
+        me.localGames.gameList = new Array<LocalGameModel>();
+
+        // @ts-ignore
+        for (let i = 0; i < me.localGames.gameCount; ++i) 
+        {
+            let game = new LocalGameModel();
+            game.localGameId = message.getUint32();
+            game.gameName = message.getNullTerminatedString();
+            game.mapName = message.getNullTerminatedString();
+
+            // @ts-ignore
+            me.localGames.gameList.push(game);
+        }
+
+        // @ts-ignore
+        console.log(me.localGames);
     }
 
     public addHandler(callback: Function, header: number): void {
         if (this._handlerList[header] === undefined)
             this._handlerList[header] = []
         this._handlerList[header].push(callback)
+        console.log(this._handlerList[header])
     }
 
     public removeHandler(callback: Function, header: number): void {

@@ -7,7 +7,7 @@
                 </b-navbar-item>
             </b-navbar-dropdown>
             <b-navbar-item tag="router-link" :to="{ path: '/' }">
-                Home
+                {{$t('Home')}}
             </b-navbar-item>
             <b-navbar-item tag="router-link" :to="{ path: '/games' }">
                 {{$t('GameList')}}
@@ -17,9 +17,13 @@
         <template slot="end">
             <b-navbar-item tag="div">
                 <div class="buttons">
+                    <a class="button is-info" icon="home">
+                        <font-awesome-icon icon="random" style="margin-right: 5px;"/>
+                        {{$t('GamesInConnector')}}
+                    </a>
                     <a class="button is-info" icon="home" @click="openUploadMap()">
                         <font-awesome-icon icon="upload" style="margin-right: 5px;"/>
-                        Загрузить карту
+                        {{$t('UploadMap')}}
                     </a>
                 </div>
             </b-navbar-item>
@@ -30,13 +34,13 @@
             </b-navbar-dropdown>
             <b-navbar-dropdown :label="client.userObj.nickname" right v-else>
                 <b-navbar-item @click="hostGame()">
-                    Захостить игру
+                    {{$t('HostNewGame')}}
                 </b-navbar-item>
                 <b-navbar-item @click="settings()">
-                    Настройки
+                    {{$t('Settings')}}
                 </b-navbar-item>
                 <b-navbar-item @click="unlogin()">
-                    Выйти
+                    {{$t('Logout')}}
                 </b-navbar-item>
             </b-navbar-dropdown>
         </template>
