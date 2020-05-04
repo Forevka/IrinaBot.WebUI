@@ -17,7 +17,7 @@
         <template slot="end">
             <b-navbar-item tag="div">
                 <div class="buttons">
-                    <a class="button is-info" @click="openConnectorGames()">
+                    <a class="button is-info" @click="openConnectorGames()" :disabled="localClient.isConnected() === false">
                         <font-awesome-icon icon="random" style="margin-right: 5px;"/>
                         {{$t('GamesInConnector')}}
                     </a>
@@ -54,7 +54,9 @@ import {playerColors} from "@/utilities/PlayerColors";
 import MapUploadComponent from './MapUploadComponent.vue';
 import {availableLanguages, i18n} from '@/I18n/languages';
 import client from '@/services/Implementations/ApiClient';
+import localClient from '@/services/Implementations/LocalClient';
 import { IApiClient } from '../services/Abstractions/IApiClient';
+import ILocalClient from '../services/Abstractions/ILocalClient';
 import UserAuthModel from '../models/responses/UserAuthModel';
 import GameHostComponent from './GameHostComponent.vue';
 import GamesInConnectorComponent from './GamesInConnectorComponent.vue';
@@ -73,11 +75,13 @@ export default class NavBarComponent extends Vue {
 
     public currentUser: UserAuthModel;
     public client: IApiClient;
+    public localClient: ILocalClient;
 
     constructor() {
         super();
 
         this.client = client;
+        this.localClient = localClient;
 
         let userLang = localStorage.getItem('userPrefferedLanguage');
         

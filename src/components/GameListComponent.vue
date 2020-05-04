@@ -33,7 +33,7 @@
             :current-page="1"
             :per-page="perPage"
             :data="gameListFiltered()"
-            :bordered="true"
+            :bordered="false"
             :striped="true"
             :narrowed="true"
             :selected.sync="selected"
