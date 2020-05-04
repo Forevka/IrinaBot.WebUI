@@ -53,7 +53,13 @@
                     {{ props.row.name }}
                 </b-table-column>
 
-                <b-table-column width="50%" field="formattedPlayers" label="Игроки" sortable v-html="props.row.formattedPlayers">
+                <b-table-column 
+                width="50%" 
+                field="formattedPlayers" 
+                label="Игроки" 
+                sortable 
+                v-html="props.row.formattedPlayers" 
+                style="">
                     <b-input
                     slot="subheading"
                     placeholder="Поиск..."
