@@ -17,11 +17,11 @@
         <template slot="end">
             <b-navbar-item tag="div">
                 <div class="buttons">
-                    <a class="button is-info" icon="home">
+                    <a class="button is-info" @click="openConnectorGames()">
                         <font-awesome-icon icon="random" style="margin-right: 5px;"/>
                         {{$t('GamesInConnector')}}
                     </a>
-                    <a class="button is-info" icon="home" @click="openUploadMap()">
+                    <a class="button is-info" @click="openUploadMap()">
                         <font-awesome-icon icon="upload" style="margin-right: 5px;"/>
                         {{$t('UploadMap')}}
                     </a>
@@ -57,6 +57,7 @@ import client from '@/services/Implementations/ApiClient';
 import { IApiClient } from '../services/Abstractions/IApiClient';
 import UserAuthModel from '../models/responses/UserAuthModel';
 import GameHostComponent from './GameHostComponent.vue';
+import GamesInConnectorComponent from './GamesInConnectorComponent.vue';
 
 
 @Component({
@@ -88,6 +89,17 @@ export default class NavBarComponent extends Vue {
 
         this.availableAuthOptions.set('Discord', 'https://discordapp.com/oauth2/authorize?client_id=517423360091881484&redirect_uri=https%3A%2F%2Fptr.irinabot.ru%2Fdiscord%2F&response_type=token&scope=identify%20guilds.join')
 
+    }
+
+    openConnectorGames(): void {
+        this.$buefy.modal.open({
+            canCancel: ['outside'],
+            parent: this,
+            component: GamesInConnectorComponent,
+            hasModalCard: true,
+            customClass: 'game-in-connector-wrapper',
+            trapFocus: true
+        })
     }
 
     hostGame(): void {

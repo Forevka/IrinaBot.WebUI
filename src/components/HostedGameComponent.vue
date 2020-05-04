@@ -5,7 +5,7 @@
                 <header class="modal-card-head">
                     <p class="modal-card-title">You game</p>
                 </header>
-                <section class="modal-card-body" >
+                <section class="modal-card-body">
                     {{game.description}}
                 </section>
                 <footer class="modal-card-foot">

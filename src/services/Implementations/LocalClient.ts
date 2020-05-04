@@ -8,7 +8,7 @@ class LocalClient implements ILocalClient {
     private _client: WebSocket;
     private _websocketUrl: string = "ws://127.0.0.1:8148"
 
-    public localGames: LocalGameList;
+    public _localGames: LocalGameList;
 
     private _isConnected: boolean = false;
     public _isReconnecting: boolean = false;
@@ -88,7 +88,6 @@ class LocalClient implements ILocalClient {
             }
 
             handlerList.forEach((handler) => {
-                console.log(this.localGames)
                 handler(this, dataBuffer);
             })
         })
@@ -97,16 +96,16 @@ class LocalClient implements ILocalClient {
     public onLocalGameList(me: ILocalClient, message: DataBuffer): void {
         console.log(me)
         // @ts-ignore
-        me.localGames = new LocalGameList();
+        me._localGames = new LocalGameList();
         // @ts-ignore
-        me.localGames.localConnects = message.getUint16();
+        me._localGames.localConnects = message.getUint16();
         // @ts-ignore
-        me.localGames.gameCount = message.getUint16();
+        me._localGames.gameCount = message.getUint16();
         // @ts-ignore
-        me.localGames.gameList = new Array<LocalGameModel>();
+        me._localGames.gameList = new Array<LocalGameModel>();
 
         // @ts-ignore
-        for (let i = 0; i < me.localGames.gameCount; ++i) 
+        for (let i = 0; i < me._localGames.gameCount; ++i) 
         {
             let game = new LocalGameModel();
             game.localGameId = message.getUint32();
@@ -114,11 +113,15 @@ class LocalClient implements ILocalClient {
             game.mapName = message.getNullTerminatedString();
 
             // @ts-ignore
-            me.localGames.gameList.push(game);
+            me._localGames.gameList.push(game);
         }
 
         // @ts-ignore
-        console.log(me.localGames);
+        console.log(me._localGames);
+    }
+
+    localGames(): LocalGameList {
+        return this._localGames;
     }
 
     public addHandler(callback: Function, header: number): void {
