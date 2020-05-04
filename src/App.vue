@@ -100,13 +100,15 @@ export default class App extends Vue {
 
   onCreateGameAnswer(message: DataBuffer) {
     let game = this.defaultHelper.parseCreateGameResponse(message)
-    console.log(game)
+    
     if(game.code === 11)
     {
       this.$awn.alert(game.description, {})
       return;
     }
     
+    this.$awn.success(game.description, {})
+
     if (game.password !== '')
     {
       this.$buefy.modal.open({
