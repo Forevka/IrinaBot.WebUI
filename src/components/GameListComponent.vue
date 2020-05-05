@@ -37,6 +37,19 @@
                         :placeholder="$t('GamePlayerNameFilter')"
                     ></b-form-input>
                 </b-th>
+                <b-th style="display: inline-flex;">
+                    <b-form-group class="game-filters">
+                        <b-form-checkbox v-model="onlyMyGames" name="check-button" switch>
+                            {{$t('OnlyMyGames')}}
+                        </b-form-checkbox>
+                        <b-form-checkbox v-model="dontShowFullGame" name="check-button" switch>
+                            {{$t('DontShowFullGame')}}
+                        </b-form-checkbox>
+                    </b-form-group>
+                    <b-button variant="primary" :disabled="!localClient.isConnected()">
+                        {{$t('OtherFilters')}}
+                    </b-button>
+                </b-th>
             </b-tr>
         </template>
 
@@ -47,7 +60,7 @@
         <!-- A custom formatted column -->
         <template v-slot:cell(players)="data">
             <div 
-                v-html="data.item.formattedPlayers"
+                v-html="formatPlayers(data.item.players)"
                 style="display: flex;">
             </div>
         </template>
@@ -201,6 +214,7 @@ export default class GameListComponent extends Vue {
     public isOpen: boolean = true;
     public perPage: number;
     public dontShowFullGame: boolean = false;
+    public onlyMyGames: boolean = false;
 
     private gameNameValue: string = "";
     private playerNameValue: string = "";
@@ -215,6 +229,8 @@ export default class GameListComponent extends Vue {
 
     private sortIcon: string = 'arrow-up';
     private sortIconSize: string = 'is-small';
+
+    private playerColors = [ "red", "blue", "teal", "#540080", "yellow", "orange", "green", "pink", "#959697", "#7EBFF1", "#106246", "#4e2a04", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000" ];
 
     public fields = [
         { 
@@ -252,6 +268,17 @@ export default class GameListComponent extends Vue {
         this.loadSettings()
     }
 
+    formatPlayers(players: Player[]) {
+        let res = '';
+        players.forEach(player => {
+            if (player.name != "")
+            {
+                res += `<div class="player-name" style="color: ${this.playerColors[player.color]};text-shadow: 0 0 1px black;white-space: nowrap;">` + player.name + "</div>";
+            }
+        });
+        return res;
+    }
+
     storeSettings() {
         let key: string = `gameListComponent_${this.tableType}`
 
@@ -284,6 +311,12 @@ export default class GameListComponent extends Vue {
             toRet = toRet.filter(x => x.formattedPlayers.toLowerCase().includes(this.playerNameValue.toLowerCase()))
         
         if (this.dontShowFullGame === true)
+        {
+            let toDelete = toRet.filter(x => x.players.length === x.realPlayersCount).map(x => x.gameCounter);
+            toRet = toRet.filter(x => !toDelete.includes(x.gameCounter));
+        }
+
+        if (this.onlyMyGames === true)
         {
             let toDelete = toRet.filter(x => x.players.length === x.realPlayersCount).map(x => x.gameCounter);
             toRet = toRet.filter(x => !toDelete.includes(x.gameCounter));
@@ -338,6 +371,12 @@ export default class GameListComponent extends Vue {
 </script>
 
 <style scoped lang="scss">
+.game-filters {
+    margin-bottom: 0 !important;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
 .game-list {
   padding-top: 25px;
   padding-bottom: 25px;

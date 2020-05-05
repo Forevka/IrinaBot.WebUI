@@ -16,7 +16,10 @@ const translations = {
         Logout: 'Logout',
         Play: 'Play!',
         GameNameFilter: 'Game name...',
-        GamePlayerNameFilter: 'Player name...'
+        GamePlayerNameFilter: 'Player name...',
+        OnlyMyGames: "Only my games",
+        DontShowFullGame: "Games with empty slots",
+        OtherFilters: "Other filters"
     },
     'ru': {
         GameList: 'К списку игр',
@@ -29,7 +32,10 @@ const translations = {
         Logout: 'Выйти',
         Play: 'Играть!',
         GameNameFilter: 'Имя игры...',
-        GamePlayerNameFilter: 'Имя игрока...'
+        GamePlayerNameFilter: 'Имя игрока...',
+        OnlyMyGames: "Только мои игры",
+        DontShowFullGame: "Игры со свободными местами",
+        OtherFilters: "Другие фильтры"
     }
 };
 
