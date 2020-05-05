@@ -19,18 +19,17 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Game, Player } from '../models/responses/GameModel';
 import {playerColors} from "@/utilities/PlayerColors";
 import MapUploadComponent from './MapUploadComponent.vue';
 import {availableLanguages, i18n} from '@/I18n/languages';
 import client from '@/services/Implementations/ApiClient';
-import { IApiClient } from '../services/Abstractions/IApiClient';
-import UserAuthModel from '../models/responses/UserAuthModel';
-import MapLoader from '../services/Implementations/MapLoader';
-import MapModel from '../models/responses/MapModel';
-import { IDefaultContextHelper } from '../services/Abstractions/IDefaultContextHelper';
-import DefaultContextHelper from '../services/Implementations/DefaultContextHelper';
-import CreateGameModel from '../models/responses/CreateGameModel';
+import { IApiClient } from '@/services/Abstractions/IApiClient';
+import UserAuthModel from '@/models/responses/UserAuthModel';
+import MapLoader from '@/services/Implementations/MapLoader';
+import MapModel from '@/models/responses/MapModel';
+import { IDefaultContextHelper } from '@/services/Abstractions/IDefaultContextHelper';
+import DefaultContextHelper from '@/services/Implementations/DefaultContextHelper';
+import CreateGameModel from '@/models/responses/CreateGameModel';
 
 
 @Component({

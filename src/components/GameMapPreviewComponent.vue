@@ -13,7 +13,7 @@
                 
             </div>
             <div class="game-map-to-game" v-if="game.gameCounter !== undefined">
-                <b-button icon-left="gamepad" type="is-success" :disabled="!localClient.isConnected()"> 
+                <b-button style="left: 50%;position: relative;" icon-left="gamepad" type="is-success" :disabled="!localClient.isConnected()"> 
                     Play!
                 </b-button>
             </div>

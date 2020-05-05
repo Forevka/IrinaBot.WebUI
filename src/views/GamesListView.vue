@@ -3,14 +3,14 @@
     <div class="game-list-view">
       <template class="game-list-view-wrapper" v-if="haveGames()">
         <div class="table-games-wrapper games-donated">
-          <GameListComponent :gameList="gamePool.gameList" :tableType="0" @onrowchoose="rowChoose" :showByDefault="true"/>
+          <GameListComponent :gameList="gamePool.powerUpGames()" :tableType="0" @onrowchoose="rowChoose" :showByDefault="true"/>
         </div>
-        <!--<div class="table-games-wrapper games-not-started">
+        <div class="table-games-wrapper games-not-started">
           <GameListComponent :gameList="gamePool.notStartedGames()" :tableType="1" @onrowchoose="rowChoose" :showByDefault="true"/>
         </div>
         <div class="table-games-wrapper games-started">
           <GameListComponent :gameList="gamePool.startedGames()" :tableType="2" @onrowchoose="rowChoose" :showByDefault="false"/>
-        </div>-->
+        </div>
       </template>
     </div>
     <game-map-preview-component :mapPreview="mapPreview" :game="gameChosen" v-if="haveGames()"/>
@@ -57,7 +57,7 @@ export default class GamesListView extends Vue {
 
   rowChoose(who, game: Game) {
     this.gameChosen = game;
-    this.client.sendMessage(this.contextHelper.createGetMapInfo(game[0].gameCounter))
+    this.client.sendMessage(this.contextHelper.createGetMapInfo(game.gameCounter))
   }
 
   created() {
@@ -69,6 +69,9 @@ export default class GamesListView extends Vue {
     this.mapPreview.players = "";
 
     this.client = client;
+
+    this.client.sendMessage(this.contextHelper.createGetMapInfo(51098));
+
     this.client.addDefaultHandler(this.newChatMessage, DefaultContextHeaders.NewMessageAnswer)
     this.client.addDefaultHandler(this.onGamesList, DefaultContextHeaders.GameListAnswer)
     this.client.addDefaultHandler(this.onMapInfo, DefaultContextHeaders.MapInfoAnswer)
@@ -78,8 +81,7 @@ export default class GamesListView extends Vue {
   }
 
   onMapInfo(message: DataBuffer) {
-      this.mapPreview = this.contextHelper.parseMapInfo(message);
-      console.log(this.mapPreview)
+    this.mapPreview = this.contextHelper.parseMapInfo(message);
   }
 
   afterConnect() {

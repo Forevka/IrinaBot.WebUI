@@ -9,7 +9,7 @@
     primary-key="gameCounter"
     sort-by="realPlayersCount"
     :sort-desc="true"
-    @row-selected="clicked"
+    @row-clicked="clicked"
     :fields="fields"
     :items="gameListFiltered()"
     show-empty
@@ -37,7 +37,7 @@
                         :placeholder="$t('GamePlayerNameFilter')"
                     ></b-form-input>
                 </b-th>
-                <b-th style="display: inline-flex;">
+                <b-th colspan="3" style="display: -webkit-inline-box;">
                     <b-form-group class="game-filters">
                         <b-form-checkbox v-model="onlyMyGames" name="check-button" switch>
                             {{$t('OnlyMyGames')}}
@@ -53,7 +53,7 @@
             </b-tr>
         </template>
 
-        <template v-slot:cell(name)="data">
+        <template v-slot:cell(name)="data" >
             {{ data.item.name }}
         </template>
 
@@ -237,6 +237,7 @@ export default class GameListComponent extends Vue {
             key: 'name', 
             label: 'Game Name',
             sortable: true,
+            'class': 'game-name'
         },
         // A virtual column made up from two fields
         { 
@@ -329,7 +330,7 @@ export default class GameListComponent extends Vue {
 
         if (this.onlyMyGames === true)
         {
-            let toDelete = toRet.filter(x => x.players.length === x.realPlayersCount).map(x => x.gameCounter);
+            let toDelete = toRet.filter(x => x.creatorId.toString() !== this.client.userObj.id).map(x => x.gameCounter);
             toRet = toRet.filter(x => !toDelete.includes(x.gameCounter));
         }
 
@@ -340,8 +341,9 @@ export default class GameListComponent extends Vue {
         
     }
 
-    clicked(row: Game) {
-        this.selected = row;
+    clicked(game: Game, val, evt) {
+        evt.target.parentNode.classList = 'b-table-row-selected table-active'
+        this.selected = game;
         this.$emit("onrowchoose", this, this.selected)
     }
 
@@ -400,11 +402,12 @@ td > * {
 tbody {
     //display: block;
 }
+.game-name {
+    font-weight:600;
+}
 </style>
 
 <style scoped lang="scss">
-
-
 .game-filters {
     margin-bottom: 0 !important;
     padding-right: 10px;
