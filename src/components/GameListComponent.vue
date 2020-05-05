@@ -1,6 +1,76 @@
 <template>
 <div class="game-list">
-  <section>
+  <b-table 
+    striped 
+    borderless 
+    hover 
+    selectable
+    select-mode="single"
+    primary-key="gameCounter"
+    sort-by="realPlayersCount"
+    :sort-desc="true"
+    @row-selected="clicked"
+    :fields="fields"
+    :items="gameListFiltered()"
+    show-empty
+    >
+        <template v-slot:table-busy>
+            <div class="text-center text-danger my-2">
+                <strong>{{$t("NothingHere")}}</strong>
+            </div>
+        </template>
+        <template v-slot:thead-top>
+            <b-tr>
+                <b-th>
+                    <b-form-input
+                        v-model="gameNameValue"
+                        type="search"
+                        id="filterInput"
+                        :placeholder="$t('GameNameFilter')"
+                    ></b-form-input>
+                </b-th>
+                <b-th>
+                    <b-form-input
+                        v-model="playerNameValue"
+                        type="search"
+                        id="filterInput"
+                        :placeholder="$t('GamePlayerNameFilter')"
+                    ></b-form-input>
+                </b-th>
+            </b-tr>
+        </template>
+
+        <template v-slot:cell(name)="data">
+            {{ data.item.name }}
+        </template>
+
+        <!-- A custom formatted column -->
+        <template v-slot:cell(players)="data">
+            <div 
+                v-html="data.item.formattedPlayers"
+                style="display: flex;">
+            </div>
+        </template>
+
+        <template v-slot:cell(realPlayersCount)="data">
+            {{data.item.realPlayersCount}}
+        </template>
+
+        <template v-slot:cell(players.length)="data">
+            {{ data.item.players.length }}
+        </template>
+
+        <template v-slot:cell(play)="data">
+            <b-button variant="info" :disabled="!localClient.isConnected()" @click="sendToLocal(data.item)">
+                {{$t('Play')}}
+            </b-button>
+        </template>
+    </b-table>
+</div>
+</template>
+
+<script lang="ts">
+/*<section>
     <b-collapse
         aria-id="contentIdForA11y2"
         class="card"
@@ -107,11 +177,7 @@
             </template>
         </b-table>
     </b-collapse>
-    </section>
-</div>
-</template>
-
-<script lang="ts">
+    </section> */
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import client from "@/services/Implementations/ApiClient";
 import { IApiClient } from '../services/Abstractions/IApiClient';
@@ -149,6 +215,37 @@ export default class GameListComponent extends Vue {
 
     private sortIcon: string = 'arrow-up';
     private sortIconSize: string = 'is-small';
+
+    public fields = [
+        { 
+            key: 'name', 
+            label: 'Game Name',
+            sortable: true,
+        },
+        // A virtual column made up from two fields
+        { 
+            key: 'players', 
+            label: 'Players',
+            sortable: true,
+        },
+        {
+            // A virtual column with custom formatter
+            key: 'realPlayersCount',
+            label: 'P.C.',
+            sortable: true,
+        },
+        {
+            // A virtual column with custom formatter
+            key: 'players.length',
+            label: 'M.P.C.',
+            sortable: true,
+        },
+        {
+            // A virtual column with custom formatter
+            key: 'play',
+            label: 'Play',
+        }
+    ]
 
     constructor() {
         super();
@@ -200,14 +297,8 @@ export default class GameListComponent extends Vue {
     }
 
     clicked(row: Game) {
-        console.log(row)
-        if (row.gameCounter != this.selected.gameCounter)
-        {   
-            console.log("sending")
-            this.selected = row;
-            this.$emit("onrowchoose", this, this.selected)
-            console.log("sending2")
-        }
+        this.selected = row;
+        this.$emit("onrowchoose", this, this.selected)
     }
 
     sendToLocal(row: Game) {

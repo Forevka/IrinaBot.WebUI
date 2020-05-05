@@ -55,9 +55,9 @@ export default class GamesListView extends Vue {
     super();
   }
 
-  rowChoose(who, game: Game){
+  rowChoose(who, game: Game) {
     this.gameChosen = game;
-    this.client.sendMessage(this.contextHelper.createGetMapInfo(game.gameCounter))
+    this.client.sendMessage(this.contextHelper.createGetMapInfo(game[0].gameCounter))
   }
 
   created() {
@@ -79,6 +79,7 @@ export default class GamesListView extends Vue {
 
   onMapInfo(message: DataBuffer) {
       this.mapPreview = this.contextHelper.parseMapInfo(message);
+      console.log(this.mapPreview)
   }
 
   afterConnect() {

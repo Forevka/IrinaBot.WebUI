@@ -1,6 +1,53 @@
 <template>
-    <b-navbar>
-        <template slot="start">
+    <b-navbar toggleable="lg" type="dark" variant="info">
+        <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+            <b-nav-item-dropdown :text="langToName(currentLanguage)">
+                <b-dropdown-item v-for="lang in langList" :key="lang" @click="changeLanguage(lang)">
+                    {{langToName(lang)}}
+                </b-dropdown-item>
+            </b-nav-item-dropdown>
+            <b-nav-item @click="$router.push('/')">
+                {{$t('Home')}}
+            </b-nav-item>
+            <b-nav-item @click="$router.push('/games')">
+                {{$t('GameList')}}
+            </b-nav-item>
+            <b-nav-item @click="$router.push('/settings')">
+                {{$t('Settings')}}
+            </b-nav-item>
+        </b-navbar-nav>
+
+        <b-navbar-nav class="ml-auto">
+            <b-button variant="info" @click="openConnectorGames()">
+                {{$t('GamesInConnector')}}
+            </b-button>
+            <b-button variant="info" @click="openUploadMap()">
+                {{$t('UploadMap')}}
+            </b-button>
+            <b-nav-item-dropdown right v-if="client.isLogged()">
+                <template v-slot:button-content>
+                    <em>{{client.userObj.nickname}}</em>
+                </template>
+                <b-dropdown-item>{{$t('HostNewGame')}}</b-dropdown-item>
+                <b-dropdown-item>{{$t('Logout')}}</b-dropdown-item>
+            </b-nav-item-dropdown>
+            <b-nav-item-dropdown right v-else>
+                <template v-slot:button-content>
+                    <em>Login</em>
+                </template>
+                <b-dropdown-item v-for="option in availableAuthOptions" :key="option[0]" @click="login(option[1])">
+                    {{option[0]}}
+                </b-dropdown-item>
+            </b-nav-item-dropdown>
+        </b-navbar-nav>
+        </b-collapse>
+    </b-navbar>
+</template>
+
+<script lang="ts">
+/*
+<template slot="start">
             <b-navbar-dropdown :label="langToName(currentLanguage)">
                 <b-navbar-item v-for="lang in langList" :key="lang" @click="changeLanguage(lang)">
                     {{langToName(lang)}}
@@ -43,11 +90,9 @@
                     {{$t('Logout')}}
                 </b-navbar-item>
             </b-navbar-dropdown>
-        </template>
-    </b-navbar>
-</template>
+        </template> 
+        */
 
-<script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Game, Player } from '../models/responses/GameModel';
 import {playerColors} from "@/utilities/PlayerColors";
@@ -96,25 +141,25 @@ export default class NavBarComponent extends Vue {
     }
 
     openConnectorGames(): void {
-        this.$buefy.modal.open({
+        /*this.$buefy.modal.open({
             canCancel: ['outside'],
             parent: this,
             component: GamesInConnectorComponent,
             hasModalCard: true,
             customClass: 'game-in-connector-wrapper',
             trapFocus: true
-        })
+        })*/
     }
 
     hostGame(): void {
-        this.$buefy.modal.open({
+        /*this.$buefy.modal.open({
             canCancel: [''],
             parent: this,
             component: GameHostComponent,
             hasModalCard: true,
             customClass: 'game-host-wrapper',
             trapFocus: true
-        })
+        })*/
     }
 
     unlogin(): void {
@@ -150,14 +195,14 @@ export default class NavBarComponent extends Vue {
     }
 
     openUploadMap() {
-        this.$buefy.modal.open({
+        /*this.$buefy.modal.open({
             canCancel: [''],
             parent: this,
             component: MapUploadComponent,
             hasModalCard: true,
             customClass: 'custom-class custom-class-2',
             trapFocus: true
-        })
+        })*/
     }
 }
 </script>

@@ -1,9 +1,17 @@
 <template>
   <div id="app">
     <div id="nav"></div>
-    <b-loading :is-full-page="true" :active="isLoading" :can-cancel="false"></b-loading>
-    <NavBarComponent />
-    <router-view />
+    <b-overlay
+      :show="isLoading"
+      spinner-variant="primary"
+      spinner-type="grow"
+      spinner-small
+      rounded="sm"
+      :style="isLoading === true ? 'position: fixed !important;width: 100%;height: 100%;' : ''"
+    >
+      <NavBarComponent />
+      <router-view />
+    </b-overlay>
   </div>
 </template>
 
@@ -67,7 +75,7 @@ export default class App extends Vue {
   }
 
   async created() {
-    this.themeHelper = themeHelper;
+    /*this.themeHelper = themeHelper;
 
     let added = Object.keys(this.themes).map(name => {
       return this.themeHelper.add(name, this.themes[name]);
@@ -78,7 +86,7 @@ export default class App extends Vue {
     Promise.all(added).then(sheets => {
       console.log(`${sheets.length} themes loaded`);
       this.themeHelper.theme = 'default'
-    })
+    })*/
   }
 
   mounted() {
@@ -168,7 +176,7 @@ export default class App extends Vue {
     this.$awn.success(game.description, {});
 
     if (game.password !== "") {
-      this.$buefy.modal.open({
+      /*this.$buefy.modal.open({
         canCancel: [""],
         parent: this,
         component: HostedGameComponent,
@@ -178,7 +186,7 @@ export default class App extends Vue {
         props: {
           game
         }
-      });
+      });*/
       return;
     }
   }
@@ -250,23 +258,29 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
+@import '~bootstrap';
+@import '~bootstrap-vue';
+
+</style>
+
+<style lang="scss">
 @import "~vue-awesome-notifications/dist/styles/style.css";
 
 // Bulma + Bulmaswatch
 //@import "themes/darkly/variables";
-@import "node_modules/bulma/bulma";
+//@import "node_modules/bulma/bulma";
 //@import "themes/darkly/overrides";
 
 // Buefy
-@import "node_modules/buefy/src/scss/buefy";
+//@import "node_modules/buefy/src/scss/buefy";
 
-tbody tr:hover:not(.is-selected):not(.is-empty) {
+/*tbody tr:hover:not(.is-selected):not(.is-empty) {
   background-color: turquoise !important;
 }
 
 .table td {
   border: none;
-}
+}*/
 
 img {
   width: 100%;
@@ -315,7 +329,11 @@ html {
 </style>
 
 <style lang="scss">
-.navbar {
+.pl-10 {
+  padding-left: 10px;
+}
+
+/*.navbar {
   background-color: #1f2424;
   border-radius: 0 !important;
 }
@@ -354,5 +372,5 @@ div.b-table > div.level > div.level-right {
   display: flex;
   flex: auto;
   justify-content: center;
-}
+}*/
 </style>

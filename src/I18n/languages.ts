@@ -13,7 +13,10 @@ const translations = {
         UploadMap: 'Upload Map',
         HostNewGame: 'Host new game',
         Settings: 'Settings',
-        Logout: 'Logout'
+        Logout: 'Logout',
+        Play: 'Play!',
+        GameNameFilter: 'Game name...',
+        GamePlayerNameFilter: 'Player name...'
     },
     'ru': {
         GameList: 'К списку игр',
@@ -23,7 +26,10 @@ const translations = {
         UploadMap: 'Загрузить карту',
         HostNewGame: 'Новая игра',
         Settings: 'Настройки',
-        Logout: 'Выйти'
+        Logout: 'Выйти',
+        Play: 'Играть!',
+        GameNameFilter: 'Имя игры...',
+        GamePlayerNameFilter: 'Имя игрока...'
     }
 };
 

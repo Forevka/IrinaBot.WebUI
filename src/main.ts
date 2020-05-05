@@ -11,7 +11,7 @@ import VueAWN from "vue-awesome-notifications"
 
 import 'nprogress/nprogress.css';
 
-import Buefy from 'buefy'
+//import Buefy from 'buefy'
 //import 'buefy/dist/buefy.css'
 
 import setup from './utilities/math_round_extensions.js'
@@ -19,7 +19,14 @@ setup()
 
 import { VueNotification } from '@/types/AwnTypes';
 
-Vue.use(Buefy)
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+
+// Install BootstrapVue
+Vue.use(BootstrapVue)
+// Optionally install the BootstrapVue icon components plugin
+Vue.use(IconsPlugin)
+
+//Vue.use(Buefy)
 
 //import 'bulmaswatch/darkly/_variables.scss'
 //import 'bulmaswatch/darkly/_overrides.scss'
