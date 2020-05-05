@@ -61,7 +61,7 @@
         <template v-slot:cell(players)="data">
             <div 
                 v-html="formatPlayers(data.item.players)"
-                style="display: flex;">
+                style="display: flex;flex-wrap: wrap;">
             </div>
         </template>
 
@@ -248,12 +248,16 @@ export default class GameListComponent extends Vue {
             // A virtual column with custom formatter
             key: 'realPlayersCount',
             label: 'P.C.',
+            'class': 'real-players-count-column',
+            'tdClass': 'real-players-count-column',
             sortable: true,
         },
         {
             // A virtual column with custom formatter
             key: 'players.length',
             label: 'M.P.C.',
+            'class': 'maximal-players-count-column',
+            'tdClass': 'maximal-players-count-column',
             sortable: true,
         },
         {
@@ -270,10 +274,17 @@ export default class GameListComponent extends Vue {
 
     formatPlayers(players: Player[]) {
         let res = '';
+        let plCount = 0;
         players.forEach(player => {
+            plCount++;
             if (player.name != "")
             {
                 res += `<div class="player-name" style="color: ${this.playerColors[player.color]};text-shadow: 0 0 1px black;white-space: nowrap;">` + player.name + "</div>";
+                if (plCount === 5)
+                {
+                    //res+='<div style="flex-basis: 100%;height: 0%;"></div>'
+                    plCount = 0;
+                }
             }
         });
         return res;
@@ -370,7 +381,30 @@ export default class GameListComponent extends Vue {
 }
 </script>
 
+<style lang="scss">
+.table td.fit, 
+.table th.fit {
+    white-space: nowrap !important;
+    width: 1% !important;
+}
+
+td > * {
+    
+}
+
+.table td {
+    padding: 0.25rem !important;
+    vertical-align : middle;
+}
+
+tbody {
+    //display: block;
+}
+</style>
+
 <style scoped lang="scss">
+
+
 .game-filters {
     margin-bottom: 0 !important;
     padding-right: 10px;

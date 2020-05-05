@@ -3,14 +3,14 @@
     <div class="game-list-view">
       <template class="game-list-view-wrapper" v-if="haveGames()">
         <div class="table-games-wrapper games-donated">
-          <GameListComponent :gameList="gamePool.powerUpGames()" :tableType="0" @onrowchoose="rowChoose" :showByDefault="true"/>
+          <GameListComponent :gameList="gamePool.gameList" :tableType="0" @onrowchoose="rowChoose" :showByDefault="true"/>
         </div>
-        <div class="table-games-wrapper games-not-started">
+        <!--<div class="table-games-wrapper games-not-started">
           <GameListComponent :gameList="gamePool.notStartedGames()" :tableType="1" @onrowchoose="rowChoose" :showByDefault="true"/>
         </div>
         <div class="table-games-wrapper games-started">
           <GameListComponent :gameList="gamePool.startedGames()" :tableType="2" @onrowchoose="rowChoose" :showByDefault="false"/>
-        </div>
+        </div>-->
       </template>
     </div>
     <game-map-preview-component :mapPreview="mapPreview" :game="gameChosen" v-if="haveGames()"/>
